@@ -1,0 +1,11 @@
+[project]
+name = "dte-triage-tool"
+version = "0.1.0"
+description = "Tool to support Desktop Test Engineering triage test cases for future automation"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "dotenv>=0.9.9",
+    "streamlit",
+    "streamlit-kanban",
+]

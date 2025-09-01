@@ -1,43 +1,34 @@
 import streamlit as st
 
 from streamlit_kanban import kanban
-from src.core.triage import Triage
 
+from src.core.intergrations.controllers.triage_form import TriageFormController
+from src.core.util import Util
+from src.core.types import FormValues
 
 def run():
-    st.set_page_config(layout="wide")
-
     st.title("Test Case Triage Kanban Board")
     st.markdown("This tool helps Desktop Test Engineering triage test cases for future automation.")
-
+    form_controller = TriageFormController()
     with st.sidebar:
         st.header("Triage Configuration")
-        form_values = {'suite_id': st.text_input("Suite ID", "2054"), 'priority_id': st.text_input("Priority ID", "1"),
-                       'automation_status': st.text_input("Automation Status", "1")}
+        form_values: FormValues = form_controller.set_inputs()
         if st.button("Fetch Test Cases"):
-            if all(form_values.values()):
-                st.session_state.test_cases = fetch_test_cases(form_values['suite_id'], form_values['priority_id'], form_values['automation_status'])
-                print(st.session_state.test_cases['cases'])
+            ok, msg = form_controller.query_and_save(form_values)
+            if not ok:
+                st.warning(msg)
             else:
-                st.warning("Please fill in all required fields.")
+                st.success("Test cases fetched.")
+
 
     # Main content area
-    if "test_cases" in st.session_state:
-        display_kanban_board(st.session_state.test_cases)
+    if form_controller.state.has_test_cases():
+        print("here", form_controller.state.get_test_cases()['cases'][0])
+        display_kanban_board(form_controller.state.get_test_cases())
     else:
         st.info("Please configure the triage settings in the sidebar and click 'Fetch Test Cases'.")
 
-def fetch_test_cases(suite_id, priority_id, automation_status):
-    """
-    Fetches test cases from TestRail based on the provided criteria.
-    """
-    triage_service = Triage()
-    form_values = {
-        "suite_id": int(suite_id),
-        "priority_id": int(priority_id),
-        "automation_status": int(automation_status)
-    }
-    return triage_service.tr_session.get_test_cases(17, form_values)
+
 
 def display_kanban_board(test_cases):
     """
@@ -48,16 +39,18 @@ def display_kanban_board(test_cases):
             "id": "test_cases_unorganized",
             "title": "Test Cases",
             "cards": [
-                {"id": f"card-{testcase['id']}", "name": testcase['title'], "fields": ["Bug"], "color": f"#5550FF"} for testcase in test_cases.get('cases', [])
+                {"id": f"card-{testcase['id']}", "name": testcase['title'], "fields": ["Bug"], "color": Util.priority_color(testcase['priority_id'])} for testcase in test_cases.get('cases', [])
             ],
         },
         {
             "id": "test_cases_suitable",
-            "title": "Automation Suitable Test Cases",
+            "title": "Automation Suitable",
             "cards": [
             ],
         },
-        {"id": "test_cases_unsuitable", "title": "Automation UnSuitable Test Cases", "cards": []},
+        {"id": "test_cases_unsuitable", "title": "Automation Unsuitable", "cards": []},
     ]
-
-    kanban(cols)
+    if test_cases:
+        kanban(cols)
+    else:
+        st.info("No test cases found.\nChange search criteria and retry.")
