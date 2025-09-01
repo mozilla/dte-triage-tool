@@ -23,7 +23,6 @@ def run():
 
     # Main content area
     if form_controller.state.has_test_cases():
-        print("here", form_controller.state.get_test_cases()['cases'][0])
         display_kanban_board(form_controller.state.get_test_cases())
     else:
         st.info("Please configure the triage settings in the sidebar and click 'Fetch Test Cases'.")

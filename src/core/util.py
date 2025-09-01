@@ -20,10 +20,7 @@ class Util:
             4: "#43a047",  # Low - Green
             5: "#1e88e5",  # Very Low - Blue
         }
-        try:
-            return mapping.get(int(priority_id), "#9e9e9e")  # Default - Grey
-        except (TypeError, ValueError):
-            return "#9e9e9e"
+        return mapping.get(int(priority_id), "#9e9e9e")  # Default - Grey
 
     @staticmethod
     def extract_and_concat_ids(data: list[tuple[int, str]]) -> str:
