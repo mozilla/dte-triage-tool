@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import TypedDict, Literal, Tuple
+from typing import TypedDict, Tuple
 
 
 class FormValues(TypedDict):
