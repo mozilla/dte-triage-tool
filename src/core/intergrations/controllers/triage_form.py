@@ -10,29 +10,37 @@ AUTOMATION_STATUSES = [(1, 'Untriaged'), (2, 'Suitable'), (3, 'Unsuitable'), (4,
 
 class TriageFormController:
 
-    def __init__(self, state = None):
+    def __init__(self, state=None):
         self.triage = Triage().get_instance()
         self.state = state if state else SessionState()
 
     def set_inputs(self):
         """ Set the inputs for the form"""
-        available_priorities = [(priority['id'], priority['name']) for priority in self.triage.get_and_cache_priorities()]
-        return {'suite_id': st.text_input("Suite ID", "2054"),
+        available_priorities = [(priority['id'], priority['name']) for priority in
+                                self.triage.get_and_cache_priorities()]
+        return {'project_id': st.text_input("Project ID", "17"),
+                'suite_id': st.text_input("Suite ID", "2054"),
                 'priority_id': st.multiselect("Priority ID", available_priorities),
-                'automation_status': st.multiselect("Automation Status", AUTOMATION_STATUSES)}
+                'automation_status': st.multiselect("Automation Status", AUTOMATION_STATUSES),
+                'limit': st.text_input("Limit", 100)}
 
     def query_and_save(self, form_values: FormValues) -> tuple[bool, str]:
         """
             Save the form data to the session state.
         """
-        required = ("suite_id", "priority_id", "automation_status")
+        required = ("project_id", "suite_id", "priority_id", "automation_status")
         self.state.clear_test_cases()
         if not all(k in form_values and form_values.get(k) for k in required):
             return False, "Please fill in all required fields."
-        priority_ids = Util.extract_and_concat_ids(form_values.get("priority_id"))
-        automation_status_ids = Util.extract_and_concat_ids(form_values.get("automation_status"))
+        extracted_data = {
+            "project_id": int(form_values.get("project_id")),
+            "suite_id": int(form_values.get("suite_id")),
+            "priority_ids": Util.extract_and_concat_ids(form_values.get("priority_id")),
+            "automation_status_ids": Util.extract_and_concat_ids(form_values.get("automation_status")),
+            "limit": int(form_values.get("limit"))
+        }
         try:
-            test_cases = self.triage.fetch_test_cases(form_values.get("suite_id"), priority_ids, automation_status_ids)
+            test_cases = self.triage.fetch_test_cases(extracted_data)
             self.state.set_test_cases(test_cases)
             return True, "Success"
         except Exception as e:
