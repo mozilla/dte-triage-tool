@@ -11,7 +11,7 @@ BASE_VARS = f"{TEST_LOC}/base.vars"
 def test_run_hurl(hurl_test, vars_file, result):
     """Execute the hurl tests"""
     load_dotenv()
-    userauth = f"{environ['USERNAME']}:{environ['API_KEY']}"
+    userauth = f"{environ['TESTRAIL_USERNAME']}:{environ['TESTRAIL_API_KEY']}"
     # We add the explicit vars file to the base.vars
     # TODO: What if we need to overwrite?
     this_vars_file = BASE_VARS
