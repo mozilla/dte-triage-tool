@@ -46,8 +46,14 @@ class TestRail:
             :param query_params: Optional dictionary of filter key-value pairs.
             :return: List of test cases matching the filters.
         """
-        print(query_params)
         query_string = '&'.join(f"{key}={val}" for key, val in query_params.items())
         endpoint = f"get_cases/{project_id}&{query_string}" if query_params else f"get_cases/{project_id}"
-        print(endpoint)
         return self.client.send_get(endpoint)
+
+    def get_priorities(self):
+        """ Get available priorities."""
+        return self.client.send_get("get_priorities")
+
+    def get_case_fields(self):
+        """ Get available case fields."""
+        return self.client.send_get("get_case_fields")
