@@ -7,6 +7,7 @@ from src.core.util import Util
 from src.core.types import FormValues
 
 def run():
+    st.set_page_config(layout="wide")
     st.title("Test Case Triage Kanban Board")
     st.markdown("This tool helps Desktop Test Engineering triage test cases for future automation.")
     form_controller = TriageFormController()
