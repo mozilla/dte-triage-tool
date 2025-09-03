@@ -6,10 +6,6 @@ from src.core.intergrations.controllers.triage_form import TriageFormController
 from src.core.util import Util
 from src.config.types import FormValues
 
-AUTOMATION_STATUSES = ['Status_Untriaged', 'Status_Suitable', 'Status_Unsuitable', 'Status_Completed',
-                       'Status_Disabled']
-
-
 class Kanban:
     def __init__(self):
         st.set_page_config(layout="wide")
@@ -22,11 +18,10 @@ class Kanban:
             5: "Status_Disabled"
         }
         self.priority_translation = {
-            1: "Priority Critical",
-            2: "Priority High",
-            3: "Priority Medium",
-            4: "Priority Low",
-            5: "Priority Very Low"
+            1: "Priority Low",
+            2: "Priority Medium",
+            3: "Priority High",
+            4: "Priority Critical"
         }
 
     @staticmethod
@@ -61,7 +56,7 @@ class Kanban:
                     "id": status.lower(),
                     "title": status,
                     "cards": []
-                } for status in AUTOMATION_STATUSES
+                } for status in self.status_translation.values()
             }
             for test_case in test_cases:
                 case_automation_status = self.status_translation[test_case['custom_automation_status']]
@@ -69,7 +64,7 @@ class Kanban:
                     {"id": f"card-{test_case['id']}", "name": test_case['title'],
                      "fields": [f"{self.priority_translation[test_case['priority_id']]}"],
                      "color": Util.priority_color(test_case['priority_id'])})
-            kanban(list(cols.values()))
+            kanban(list(cols.values()), f"test_cases_{len(test_cases)}")
         else:
             st.info("No test cases found.\nChange search criteria and retry.")
 

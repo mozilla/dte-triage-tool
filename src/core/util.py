@@ -1,5 +1,6 @@
 from src.core.state import SessionState
 
+
 class Util:
     def __init__(self):
         self.session_state = SessionState()
@@ -11,11 +12,10 @@ class Util:
         Adjust mappings as needed to match your TestRail priorities.
         """
         mapping = {
-            1: "#e53935",  # Critical - Red
-            2: "#fb8c00",  # High - Orange
-            3: "#fdd835",  # Medium - Yellow
-            4: "#43a047",  # Low - Green
-            5: "#1e88e5",  # Very Low - Blue
+            4: "#e53935",  # Critical - Red
+            3: "#fb8c00",  # High - Orange
+            2: "#fdd835",  # Medium - Yellow
+            1: "#43a047",  # Low - Green
         }
         return mapping.get(int(priority_id), "#9e9e9e")  # Default - Grey
 
