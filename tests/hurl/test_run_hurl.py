@@ -28,10 +28,9 @@ def test_run_hurl(hurl_test, vars_file, result):
         this_vars_file = temp_file
 
     # TODO: catch subprocess.CalledProcessError
+    command = f"hurl -u {userauth} --variables-file {this_vars_file} {TEST_LOC}/{hurl_test}.hurl --test"
     hurl_output = subprocess.check_output(
-        f"hurl -u {userauth} --variables-file {this_vars_file} {TEST_LOC}/{hurl_test}.hurl --test".split(
-            " "
-        ),
+        command.split(" "),
         stderr=subprocess.STDOUT,
     )
     result_str = "Success" if result == "pass" else "Failure"

@@ -1,4 +1,4 @@
-from src.core.intergrations.testrail_integration import TestRail
+from src.core.integrations.testrail_integration import TestRail
 from src.core.state import SessionState
 from src.config.setting import Settings
 from src.config.types import Priority, FormValues
