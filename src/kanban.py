@@ -4,7 +4,7 @@ from streamlit_kanban import kanban
 
 from src.core.intergrations.controllers.triage_form import TriageFormController
 from src.core.util import Util
-from src.core.types import FormValues
+from src.config.types import FormValues
 
 
 class Kanban:

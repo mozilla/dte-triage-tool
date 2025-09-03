@@ -1,6 +1,6 @@
 from typing import Any, Optional
 
-from src.core.types import FormValues, SessionKey, Priority
+from src.config.types import FormValues, SessionKey, Priority
 import streamlit as st
 
 class SessionState:

@@ -2,7 +2,7 @@ import streamlit as st
 
 from src.core.state import SessionState
 from src.core.triage import Triage
-from src.core.types import FormValues
+from src.config.types import FormValues
 from src.core.util import Util
 
 AUTOMATION_STATUSES = [(1, 'Untriaged'), (2, 'Suitable'), (3, 'Unsuitable'), (4, 'Completed'), (5, 'Disabled')]

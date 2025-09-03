@@ -1,7 +1,7 @@
 from src.core.intergrations.testrail_integration import TestRail
 from src.core.state import SessionState
 from src.config.setting import Settings
-from src.core.types import Priority, FormValues
+from src.config.types import Priority, FormValues
 
 
 class Triage:
