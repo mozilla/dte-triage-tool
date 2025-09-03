@@ -1,3 +1,6 @@
+from typing import Optional
+
+from src.config.types import FormValues
 from src.core.intergrations.api import APIClient
 
 
@@ -38,14 +41,14 @@ class TestRail:
         """
         return self.client.send_get(f"get_case/{case_id}")
 
-    def get_test_cases(self, project_id: int, query_params: dict = {}):
+    def get_test_cases(self, query_params: Optional[FormValues]):
         """
             Get test cases associated with a specific project (and optional filters).
 
-            :param project_id: ID of the project to retrieve test cases from.
             :param query_params: Optional dictionary of filter key-value pairs.
             :return: List of test cases matching the filters.
         """
+        project_id = query_params.pop("project_id")
         query_string = '&'.join(f"{key}={val}" for key, val in query_params.items())
         endpoint = f"get_cases/{project_id}&{query_string}" if query_params else f"get_cases/{project_id}"
         return self.client.send_get(endpoint)

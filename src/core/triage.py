@@ -1,7 +1,7 @@
 from src.core.intergrations.testrail_integration import TestRail
 from src.core.state import SessionState
 from src.config.setting import Settings
-from src.core.types import Priority
+from src.config.types import Priority, FormValues
 
 
 class Triage:
@@ -31,16 +31,11 @@ class Triage:
         """ Returns the instance of Triage Class."""
         return cls._instance or cls()
 
-    def fetch_test_cases(self, suite_id, priority_ids, automation_status_ids):
+    def fetch_test_cases(self, extracted_data: FormValues):
         """
         Fetches test cases from TestRail based on the provided criteria.
         """
-        form_values = {
-            "suite_id": int(suite_id),
-            "priority_id": priority_ids,
-            "automation_status": automation_status_ids
-        }
-        return self.tr_session.get_test_cases(17, form_values)
+        return self.tr_session.get_test_cases(extracted_data)
 
     def get_and_cache_priorities(self):
         """ query priorities if data is not cached. get cached value if available. """

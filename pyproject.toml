@@ -12,4 +12,5 @@ dependencies = [
     "ruff>=0.12.10",
     "streamlit>=1.48.1",
     "streamlit-kanban",
+    "watchdog>=6.0.0",
 ]

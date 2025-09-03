@@ -4,6 +4,8 @@ from typing import TypedDict, Tuple
 
 class FormValues(TypedDict):
     """ Input values for the form. """
+    project_id: int
+    limit: int
     suite_id: int
     priority_id: list[Tuple[int, str]]
     automation_status: list[Tuple[int, str]]
