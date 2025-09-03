@@ -6,18 +6,33 @@ from src.core.intergrations.controllers.triage_form import TriageFormController
 from src.core.util import Util
 from src.config.types import FormValues
 
+AUTOMATION_STATUSES = ['Status_Untriaged', 'Status_Suitable', 'Status_Unsuitable', 'Status_Completed',
+                       'Status_Disabled']
+
 
 class Kanban:
     def __init__(self):
         st.set_page_config(layout="wide")
         self.form_controller = TriageFormController()
-
+        self.status_translation = {
+            1: "Status_Untriaged",
+            2: "Status_Suitable",
+            3: "Status_Unsuitable",
+            4: "Status_Completed",
+            5: "Status_Disabled"
+        }
+        self.priority_translation = {
+            1: "Priority Critical",
+            2: "Priority High",
+            3: "Priority Medium",
+            4: "Priority Low",
+            5: "Priority Very Low"
+        }
 
     @staticmethod
     def header():
         st.title("Test Case Triage Kanban Board")
         st.markdown("This tool helps Desktop Test Engineering triage test cases for future automation.")
-
 
     def body(self):
         with st.sidebar:
@@ -35,33 +50,28 @@ class Kanban:
         else:
             st.info("Please configure the triage settings in the sidebar and click 'Fetch Test Cases'.")
 
-    @staticmethod
-    def display_kanban_board(test_cases):
+    def display_kanban_board(self, test_cases):
         """
             Displays the Kanban board with the fetched test cases.
         """
-        cols = [
-            {
-                "id": "test_cases_unorganized",
-                "title": "Test Cases",
-                "cards": [
-                    {"id": f"card-{testcase['id']}", "name": testcase['title'], "fields": ["Bug"],
-                     "color": Util.priority_color(testcase['priority_id'])} for testcase in test_cases.get('cases', [])
-                ],
-            },
-            {
-                "id": "test_cases_suitable",
-                "title": "Automation Suitable",
-                "cards": [
-                ],
-            },
-            {"id": "test_cases_unsuitable", "title": "Automation Unsuitable", "cards": []},
-        ]
         if test_cases:
-            kanban(cols)
+            test_cases = test_cases.get('cases', [])
+            cols = {
+                status: {
+                    "id": status.lower(),
+                    "title": status,
+                    "cards": []
+                } for status in AUTOMATION_STATUSES
+            }
+            for test_case in test_cases:
+                case_automation_status = self.status_translation[test_case['custom_automation_status']]
+                cols[case_automation_status]['cards'].append(
+                    {"id": f"card-{test_case['id']}", "name": test_case['title'],
+                     "fields": [f"{self.priority_translation[test_case['priority_id']]}"],
+                     "color": Util.priority_color(test_case['priority_id'])})
+            kanban(list(cols.values()))
         else:
             st.info("No test cases found.\nChange search criteria and retry.")
-
 
     def run(self):
         self.header()
