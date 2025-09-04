@@ -35,8 +35,8 @@ class TriageFormController:
         extracted_data = {
             "project_id": int(form_values.get("project_id")),
             "suite_id": int(form_values.get("suite_id")),
-            "priority_id": Util.extract_and_concat_ids(form_values.get("priority_id")),
-            "custom_automation_status": Util.extract_and_concat_ids(form_values.get("automation_status")),
+            "priority_ids": Util.extract_and_concat_ids(form_values.get("priority_id")),
+            "automation_status_ids": Util.extract_and_concat_ids(form_values.get("automation_status")),
             "limit": int(form_values.get("limit"))
         }
         try:
