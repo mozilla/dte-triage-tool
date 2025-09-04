@@ -1,0 +1,20 @@
+---
+
+name: Triage Tool Health Checks
+
+run-name: Tests kicked off by ${{ github.actor }}
+on:
+  pull_request:
+
+jobs:
+  lint-and-format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@5
+      - name: Source Ruff
+        uses: astral-sh/ruff-action@v3
+      - name: Lint
+        run: ruff check
+      - name: Format
+        run: ruff format

@@ -20,14 +20,22 @@ class TriageFormController:
         self.state = state if state else SessionState()
 
     def set_inputs(self):
-        """ Set the inputs for the form"""
-        available_priorities = [(priority['id'], priority['name']) for priority in
-                                self.triage.get_and_cache_priorities()]
-        return {'project_id': st.text_input("Project ID", "17", key="project-id-input"),
-                'suite_id': st.text_input("Suite ID", "2054", key="suite-id-input"),
-                'priority_id': st.multiselect("Priority ID", available_priorities, key="priority-input"),
-                'automation_status': st.multiselect("Automation Status", AUTOMATION_STATUSES, key="automation-status-input"),
-                'limit': st.text_input("Limit", 100)}
+        """Set the inputs for the form"""
+        available_priorities = [
+            (priority["id"], priority["name"])
+            for priority in self.triage.get_and_cache_priorities()
+        ]
+        return {
+            "project_id": st.text_input("Project ID", "17", key="project-id-input"),
+            "suite_id": st.text_input("Suite ID", "2054", key="suite-id-input"),
+            "priority_id": st.multiselect(
+                "Priority ID", available_priorities, key="priority-input"
+            ),
+            "automation_status": st.multiselect(
+                "Automation Status", AUTOMATION_STATUSES, key="automation-status-input"
+            ),
+            "limit": st.text_input("Limit", 100),
+        }
 
     def query_and_save(self, form_values: FormValues) -> tuple[bool, str]:
         """

@@ -4,7 +4,6 @@ from src.config.types import FormValues
 from src.core.integrations.api import APIClient
 
 
-
 class TestRail:
     """
     Object describing all necessary API endpoints (and related data handling
