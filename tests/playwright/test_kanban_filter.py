@@ -5,9 +5,11 @@ from .locators import Locators
 
 SUITE_ID = "37522"
 
+
 @pytest.fixture()
 def modify_env():
     environ["TESTRAIL_PROJECT_ID"] = "72"
+
 
 def test_filter_cases(page, local_instance: str, locators: Locators):
     sleep(5)
