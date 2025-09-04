@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 @dataclass(frozen=True)
 class Settings:
     testrail_base_url: str = os.environ.get("TESTRAIL_BASE_URL", "")

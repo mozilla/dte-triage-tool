@@ -11,7 +11,7 @@ BASE_VARS = f"{TEST_LOC}/base.vars"
 def test_run_hurl(hurl_test, vars_file, result):
     """Execute the hurl tests"""
     load_dotenv()
-    userauth = f"{environ['USERNAME']}:{environ['API_KEY']}"
+    userauth = f"{environ['TESTRAIL_USERNAME']}:{environ['TESTRAIL_API_KEY']}"
     # We add the explicit vars file to the base.vars
     # TODO: What if we need to overwrite?
     this_vars_file = BASE_VARS
@@ -28,10 +28,9 @@ def test_run_hurl(hurl_test, vars_file, result):
         this_vars_file = temp_file
 
     # TODO: catch subprocess.CalledProcessError
+    command = f"hurl -u {userauth} --variables-file {this_vars_file} {TEST_LOC}/{hurl_test}.hurl --test"
     hurl_output = subprocess.check_output(
-        f"hurl -u {userauth} --variables-file {this_vars_file} {TEST_LOC}/{hurl_test}.hurl --test".split(
-            " "
-        ),
+        command.split(" "),
         stderr=subprocess.STDOUT,
     )
     result_str = "Success" if result == "pass" else "Failure"

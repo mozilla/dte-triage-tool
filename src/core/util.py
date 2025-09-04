@@ -22,6 +22,6 @@ class Util:
     @staticmethod
     def extract_and_concat_ids(data: list[tuple[int, str]]) -> str:
         """
-            Give a tuple entry of an int and str, extract the int ids and return a comma separated string of the ids.
+        Give a tuple entry of an int and str, extract the int ids and return a comma separated string of the ids.
         """
         return ",".join([str(id) for id, _ in data])
