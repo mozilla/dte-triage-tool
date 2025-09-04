@@ -40,5 +40,6 @@ jobs:
       - name: Run Pytests
         run: |
           echo ${{ secrets.DOTENV }} > .env
+          uv run playwright install firefox
           uv run pytest
 
