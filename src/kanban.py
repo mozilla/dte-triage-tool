@@ -44,7 +44,7 @@ class Kanban:
         with st.sidebar:
             st.header("Triage Configuration")
             form_values: FormValues = self.form_controller.set_inputs()
-            if st.button("Fetch Test Cases"):
+            if st.button("Fetch Test Cases", key="fetch-button"):
                 ok, msg = self.form_controller.query_and_save(form_values)
                 if not ok:
                     st.warning(msg)

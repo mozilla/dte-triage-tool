@@ -6,6 +6,7 @@ class Locators:
         self.page = page
 
         # locators go here
+        self.project_id_input = self.page.locator(".st-key-project-id-input input")
         self.suite_id_input = self.page.locator(".st-key-suite-id-input input")
         self.priority_input = self.page.locator(".st-key-priority-input input")
         self.priority_chevron = self.page.locator(
