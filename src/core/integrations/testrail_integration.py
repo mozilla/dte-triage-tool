@@ -2,9 +2,7 @@ from typing import Optional
 
 from src.config.types import FormValues
 from src.core.integrations.api import APIClient
-from typing import Optional
 
-from src.config.types import FormValues
 
 
 class TestRail:

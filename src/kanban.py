@@ -6,8 +6,13 @@ from src.core.integrations.controllers.triage_form import TriageFormController
 from src.core.util import Util
 from src.config.types import FormValues
 
-AUTOMATION_STATUSES = ['Status_Untriaged', 'Status_Suitable', 'Status_Unsuitable', 'Status_Completed',
-                       'Status_Disabled']
+AUTOMATION_STATUSES = [
+    "Status_Untriaged",
+    "Status_Suitable",
+    "Status_Unsuitable",
+    "Status_Completed",
+    "Status_Disabled",
+]
 
 
 class Kanban:
