@@ -6,6 +6,7 @@ from src.core.integrations.controllers.triage_form import TriageFormController
 from src.core.util import Util
 from src.config.types import FormValues
 
+
 class Kanban:
     def __init__(self):
         st.set_page_config(layout="wide")
