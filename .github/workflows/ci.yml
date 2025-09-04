@@ -12,9 +12,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@5
-      - name: Source Ruff
-        uses: astral-sh/ruff-action@v3
       - name: Lint
-        run: ruff check
+        run: uv run ruff check
       - name: Format
-        run: ruff format
+        run: uv run ruff format
