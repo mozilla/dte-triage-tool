@@ -2,6 +2,9 @@ from typing import Optional
 
 from src.config.types import FormValues
 from src.core.integrations.api import APIClient
+from typing import Optional
+
+from src.config.types import FormValues
 
 
 class TestRail:
@@ -34,29 +37,33 @@ class TestRail:
 
     def get_test_case(self, case_id):
         """
-            Given a case_id, get the cooresponding test case.
+        Given a case_id, get the cooresponding test case.
 
-            :param case_id: case_id
-            :return: a test case
+        :param case_id: case_id
+        :return: a test case
         """
         return self.client.send_get(f"get_case/{case_id}")
 
     def get_test_cases(self, query_params: Optional[FormValues]):
         """
-            Get test cases associated with a specific project (and optional filters).
+        Get test cases associated with a specific project (and optional filters).
 
-            :param query_params: Optional dictionary of filter key-value pairs.
-            :return: List of test cases matching the filters.
+        :param query_params: Optional dictionary of filter key-value pairs.
+        :return: List of test cases matching the filters.
         """
         project_id = query_params.pop("project_id")
-        query_string = '&'.join(f"{key}={val}" for key, val in query_params.items())
-        endpoint = f"get_cases/{project_id}&{query_string}" if query_params else f"get_cases/{project_id}"
+        query_string = "&".join(f"{key}={val}" for key, val in query_params.items())
+        endpoint = (
+            f"get_cases/{project_id}&{query_string}"
+            if query_params
+            else f"get_cases/{project_id}"
+        )
         return self.client.send_get(endpoint)
 
     def get_priorities(self):
-        """ Get available priorities."""
+        """Get available priorities."""
         return self.client.send_get("get_priorities")
 
     def get_case_fields(self):
-        """ Get available case fields."""
+        """Get available case fields."""
         return self.client.send_get("get_case_fields")
