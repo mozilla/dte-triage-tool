@@ -1,8 +1,10 @@
 import pytest
+import subprocess as sp
+from time import sleep
 from os import environ
-from subprocess import Popen
 from playwright.sync_api import Playwright
 from .locators import Locators
+import urllib3
 
 APP_TITLE = "Streamlit"
 
@@ -25,8 +27,17 @@ def page(browser):
 def local_instance(modify_env):
     port = environ.get("STREAMLIT_PORT") or 8501
     command = f"streamlit run main.py --server.port {port} --server.headless true"
-    proc = Popen(command.split(" "))
-    yield f"http://localhost:{port}"
+    proc = sp.Popen(command.split(" "))
+    ping_success = False
+    host = f"http://localhost:{port}"
+    while not ping_success:
+        try:
+            ping_success = 199 < urllib3.request("GET", host).status < 300
+        except urllib3.exceptions.MaxRetryError:
+            ping_success = False
+        sleep(0.5)
+
+    yield host
     proc.kill()
 
 
