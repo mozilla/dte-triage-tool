@@ -209,3 +209,7 @@ __marimo__/
 
 # Security
 .env
+
+
+# node
+node_modules/

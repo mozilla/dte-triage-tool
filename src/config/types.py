@@ -16,8 +16,9 @@ class SessionKey(str, Enum):
     """Session state keys."""
 
     FORM_VALUES = "form_values"
-    TEST_CASES = "test_cases"
+    INITIAL_BOARD = "initial_board"
     AVAILABLE_PRIORITIES = "available_priorities"
+    CURRENT_BOARD = "current_board"
 
 
 class Priority(TypedDict):
