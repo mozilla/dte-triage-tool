@@ -16,8 +16,9 @@ class SessionKey(str, Enum):
     """Session state keys."""
 
     FORM_VALUES = "form_values"
-    TEST_CASES = "test_cases"
+    INITIAL_BOARD = "initial_board"
     AVAILABLE_PRIORITIES = "available_priorities"
+    CURRENT_BOARD = "current_board"
 
 
 class Priority(TypedDict):
@@ -28,3 +29,16 @@ class Priority(TypedDict):
     name: str
     short_name: str
     is_default: bool
+
+class TestCase(TypedDict):
+    """ TestCase object. """
+    id: int
+    name: str
+    fields: list[str]
+    color: str
+
+class KanbanColumn(TypedDict):
+    """ KanbanColumn object """
+    id: str
+    title: str
+    cards: list[TestCase]

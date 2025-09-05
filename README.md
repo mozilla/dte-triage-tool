@@ -1,6 +1,16 @@
 # dte-triage-tool
 Tool to support Desktop Test Engineering triage test cases for future automation
 
+## Setup
+You will need to build the UI before starting up streamlit.
+Inside `src/ui/`:
+
+* `npm install`
+* `npm run build`
+
+Then run the streamlit app:
+* `streamlit run main.py`
+
 ## Environment
 
 We use `uv` to manage our environment, as a way to test-pilot this tool to replace
