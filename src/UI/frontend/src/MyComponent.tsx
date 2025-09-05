@@ -54,7 +54,7 @@ function KanbanBoard({ args, setComponentValue }: KanbanComponentProps): ReactEl
   }, [currentColumns]);
 
   return (
-    <div style={{ width: '100%' }}>
+    <div style={{ width: '100%', height: '100%', overflowY: 'hidden' }}>
       <DragDropContext onDragEnd={onDragEnd}>
         <div style={{ display: 'flex', gap: '20px', width: '100%', overflowX: 'auto' }}>
           {currentColumns.map((col) => (
@@ -63,18 +63,20 @@ function KanbanBoard({ args, setComponentValue }: KanbanComponentProps): ReactEl
                 <div
                   ref={provided.innerRef}
                   {...provided.droppableProps}
-                  style={{
+                    style={{
                     background: '#FAFAFA',
                     padding: '10px',
                     borderRadius: '8px',
-                    width: '300px',
-                    minHeight: '250px',
+                    minWidth: '18em',
+                    minHeight: '30em',
+                    maxHeight: '35em',
                     boxSizing: 'border-box',
-                  }}
-                >
-                  <h3>{col.title}</h3>
+                    overflowY: 'auto',
+                    }}
+                  >
+                  <h3 style={{ textAlign: 'center', margin: '0 0 10px 0' }}>{col.title}</h3>
                   {col.cards.map((card, cardIndex) => (
-                    <Draggable key={card.id} draggableId={card.id} index={cardIndex}>
+                    <Draggable key={`card-${card.id}`} draggableId={card.id} index={cardIndex} shouldRespectForcePress={true}>
                       {(provided) => (
                         <div
                           ref={provided.innerRef}
@@ -94,6 +96,7 @@ function KanbanBoard({ args, setComponentValue }: KanbanComponentProps): ReactEl
                           {card.fields?.map((field, i) => (
                             <div key={i}>{field}</div>
                           ))}
+                          <a target='_blank' href={`https://mozilla.testrail.io/index.php?/cases/view/${card.id}`}>Go to Test Case</a>
                         </div>
                       )}
                     </Draggable>

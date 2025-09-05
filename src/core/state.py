@@ -64,7 +64,6 @@ class SessionState:
         return self._state.get(SessionKey.CURRENT_BOARD)
 
     def set_board(self, board: list[KanbanColumn]):
-        print("Called")
         self._state[SessionKey.CURRENT_BOARD] = board
 
     def has_board(self):
