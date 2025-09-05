@@ -38,21 +38,7 @@ class Kanban:
             Displays the Kanban board with the fetched test cases.
         """
         if test_cases:
-            test_cases = test_cases.get('cases', [])
-            cols = {
-                status: {
-                    "id": status.lower(),
-                    "title": status,
-                    "cards": []
-                } for status in self.status_translation.values()
-            }
-            for test_case in test_cases:
-                case_automation_status = self.status_translation[test_case['custom_automation_status']]
-                cols[case_automation_status]['cards'].append(
-                    {"id": f"card-{test_case['id']}", "name": test_case['title'],
-                     "fields": [f"{self.priority_translation[test_case['priority_id']]}", f"Test Case ID: {test_case['id']}"],
-                     "color": Util.priority_color(test_case['priority_id'])})
-            kanban(list(cols.values()), f"test_cases_{len(test_cases)}")
+            kanban(test_cases, f"kanban_board")
         else:
             st.info("No test cases found.\nChange search criteria and retry.")
 

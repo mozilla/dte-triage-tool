@@ -2,7 +2,7 @@ import streamlit as st
 
 from src.core.state import SessionState
 from src.core.triage import Triage
-from src.config.types import FormValues
+from src.config.types import FormValues, KanbanColumn
 from src.core.util import Util
 
 AUTOMATION_STATUSES = [(1, 'Untriaged'), (2, 'Suitable'), (3, 'Unsuitable'), (4, 'Completed'), (5, 'Disabled')]
@@ -53,17 +53,17 @@ class TriageFormController:
             "limit": int(form_values.get("limit", ))
         }
         try:
-            test_cases = self.triage.fetch_test_cases(extracted_data)
+            test_cases = self.normalize_and_format_data(self.triage.fetch_test_cases(extracted_data))
             self.state.set_test_cases(test_cases)
             return True, "Success"
         except Exception as e:
             self.state.clear_test_cases()
             return False, str(e)
 
-    def normalize_and_format_data(self, test_cases: dict[str, list[dict] | dict]):
+    def normalize_and_format_data(self, test_cases: dict[str, list[dict] | dict]) -> list[KanbanColumn]:
         """ Takes the test case data and formats it for the kanban board view. """
         test_cases = test_cases.get('cases', [])
-        cols = {
+        cols: dict[str, KanbanColumn] = {
             status: {
                 "id": status.lower(),
                 "title": status,

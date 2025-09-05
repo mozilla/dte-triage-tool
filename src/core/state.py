@@ -1,6 +1,6 @@
 from typing import Any, Optional
 
-from src.config.types import FormValues, SessionKey, Priority
+from src.config.types import FormValues, SessionKey, Priority, KanbanColumn
 import streamlit as st
 
 class SessionState:
@@ -30,10 +30,10 @@ class SessionState:
             del self._state[SessionKey.FORM_VALUES]
 
     # Test cases
-    def set_test_cases(self, test_cases: list[Any]):
+    def set_test_cases(self, test_cases: list[KanbanColumn]):
         self._state[SessionKey.TEST_CASES] = test_cases
 
-    def get_test_cases(self):
+    def get_test_cases(self) -> list[KanbanColumn] | None:
         return self._state.get(SessionKey.TEST_CASES)
 
     def has_test_cases(self):
