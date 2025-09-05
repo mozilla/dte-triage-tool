@@ -13,6 +13,19 @@ class TriageFormController:
     def __init__(self, state=None):
         self.triage = Triage().get_instance()
         self.state = state if state else SessionState()
+        self.status_translation = {
+            1: "Status_Untriaged",
+            2: "Status_Suitable",
+            3: "Status_Unsuitable",
+            4: "Status_Completed",
+            5: "Status_Disabled"
+        }
+        self.priority_translation = {
+            1: "Priority Low",
+            2: "Priority Medium",
+            3: "Priority High",
+            4: "Priority Critical"
+        }
 
     def set_inputs(self):
         """ Set the inputs for the form"""
@@ -37,7 +50,7 @@ class TriageFormController:
             "suite_id": int(form_values.get("suite_id")),
             "priority_id": Util.extract_and_concat_ids(form_values.get("priority_id")),
             "custom_automation_status": Util.extract_and_concat_ids(form_values.get("automation_status")),
-            "limit": int(form_values.get("limit"))
+            "limit": int(form_values.get("limit", ))
         }
         try:
             test_cases = self.triage.fetch_test_cases(extracted_data)
@@ -46,3 +59,22 @@ class TriageFormController:
         except Exception as e:
             self.state.clear_test_cases()
             return False, str(e)
+
+    def normalize_and_format_data(self, test_cases: dict[str, list[dict] | dict]):
+        """ Takes the test case data and formats it for the kanban board view. """
+        test_cases = test_cases.get('cases', [])
+        cols = {
+            status: {
+                "id": status.lower(),
+                "title": status,
+                "cards": []
+            } for status in self.status_translation.values()
+        }
+        for test_case in test_cases:
+            case_automation_status = self.status_translation[test_case['custom_automation_status']]
+            cols[case_automation_status]['cards'].append(
+                {"id": f"card-{test_case['id']}", "name": test_case['title'],
+                 "fields": [f"{self.priority_translation[test_case['priority_id']]}",
+                            f"Test Case ID: {test_case['id']}"],
+                 "color": Util.priority_color(test_case['priority_id'])})
+        return list(cols.values())

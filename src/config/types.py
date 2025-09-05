@@ -23,3 +23,16 @@ class Priority(TypedDict):
     name: str
     short_name: str
     is_default: bool
+
+class TestCase(TypedDict):
+    """ TestCase object. """
+    id: int
+    name: str
+    fields: list[str]
+    color: str
+
+class KanbanColumn(TypedDict):
+    """ KanbanColumn object """
+    id: str
+    title: str
+    cards: list[TestCase]

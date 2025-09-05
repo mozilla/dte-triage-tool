@@ -10,19 +10,6 @@ class Kanban:
     def __init__(self):
         st.set_page_config(layout="wide")
         self.form_controller = TriageFormController()
-        self.status_translation = {
-            1: "Status_Untriaged",
-            2: "Status_Suitable",
-            3: "Status_Unsuitable",
-            4: "Status_Completed",
-            5: "Status_Disabled"
-        }
-        self.priority_translation = {
-            1: "Priority Low",
-            2: "Priority Medium",
-            3: "Priority High",
-            4: "Priority Critical"
-        }
 
     @staticmethod
     def header():
@@ -38,6 +25,7 @@ class Kanban:
                 if not ok:
                     st.warning(msg)
                 else:
+
                     st.success("Test cases fetched.")
         # Main content area
         if self.form_controller.state.has_test_cases():
@@ -62,12 +50,14 @@ class Kanban:
                 case_automation_status = self.status_translation[test_case['custom_automation_status']]
                 cols[case_automation_status]['cards'].append(
                     {"id": f"card-{test_case['id']}", "name": test_case['title'],
-                     "fields": [f"{self.priority_translation[test_case['priority_id']]}"],
+                     "fields": [f"{self.priority_translation[test_case['priority_id']]}", f"Test Case ID: {test_case['id']}"],
                      "color": Util.priority_color(test_case['priority_id'])})
             kanban(list(cols.values()), f"test_cases_{len(test_cases)}")
         else:
             st.info("No test cases found.\nChange search criteria and retry.")
 
+
     def run(self):
+        print("Running Kanban")
         self.header()
         self.body()
