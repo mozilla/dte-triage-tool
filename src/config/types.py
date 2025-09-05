@@ -3,21 +3,26 @@ from typing import TypedDict, Tuple
 
 
 class FormValues(TypedDict):
-    """ Input values for the form. """
+    """Input values for the form."""
+
     project_id: int
     limit: int
     suite_id: int
     priority_id: list[Tuple[int, str]]
     automation_status: list[Tuple[int, str]]
 
+
 class SessionKey(str, Enum):
-    """ Session state keys. """
+    """Session state keys."""
+
     FORM_VALUES = "form_values"
     TEST_CASES = "test_cases"
     AVAILABLE_PRIORITIES = "available_priorities"
 
+
 class Priority(TypedDict):
-    """ Priority object. """
+    """Priority object."""
+
     id: int
     priority: int
     name: str

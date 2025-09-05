@@ -1,4 +1,4 @@
-GET {{BASE_URL}}/index.php?/api/v2/get_cases/{{fx_desk_id}}&suite_id={{SUITE_ID}}
+GET {{TESTRAIL_BASE_URL}}/index.php?/api/v2/get_cases/{{fx_desk_id}}&suite_id={{SUITE_ID}}
 Content-Type: application/json
 HTTP 200
 [Asserts]

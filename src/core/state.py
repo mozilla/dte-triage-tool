@@ -3,12 +3,14 @@ from typing import Any, Optional
 from src.config.types import FormValues, SessionKey, Priority, KanbanColumn
 import streamlit as st
 
+
 class SessionState:
     """
     Thin wrapper to control session state.
     """
-    def __init__(self, state = None):
-        """ Initialize the state but can also pass in a pre-existing state for testing """
+
+    def __init__(self, state=None):
+        """Initialize the state but can also pass in a pre-existing state for testing"""
         self._state = state if state else st.session_state
 
     # Form values
