@@ -1,6 +1,5 @@
 from os import environ
 import pytest
-from time import sleep
 from .locators import Locators
 
 GRAVEYARD_PRJ = "72"
@@ -13,7 +12,6 @@ def modify_env():
 
 
 def test_filter_cases(page, local_instance: str, locators: Locators):
-    sleep(5)
     page.goto(local_instance, wait_until="domcontentloaded")
 
     locators.project_id_input.clear()

@@ -1,0 +1,51 @@
+---
+
+name: Triage Tool Health Checks
+
+run-name: Tests kicked off by ${{ github.actor }}
+on:
+  pull_request:
+
+jobs:
+  lint-and-format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Install Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13.2"
+      - name: Setup UV
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          uv sync
+      - name: Lint
+        run: uv run ruff check
+      - name: Format
+        run: uv run ruff format
+  run-pytests:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Install Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13.2"
+      - name: Setup Hurl
+        run: brew install hurl
+      - name: Setup UV
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          uv sync
+      - name: Setup Environment
+        env:
+          DOTENV: ${{ secrets.DOTENV }}
+        run: |
+          echo "${DOTENV}" > .env
+          uv run playwright install firefox
+      - name: Run Pytests
+        run: |
+          uv run pytest
+
