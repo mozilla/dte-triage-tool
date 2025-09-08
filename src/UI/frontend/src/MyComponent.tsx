@@ -54,7 +54,7 @@ function KanbanBoard({ args, setComponentValue }: KanbanComponentProps): ReactEl
   }, [currentColumns]);
 
   return (
-    <div style={{ width: '100%', height: '100%', overflowY: 'hidden' }}>
+    <div style={{ width: '100%', height: '100%', overflowY: 'hidden', fontFamily: 'sans-serif, sans-serif, monospace', }}>
       <DragDropContext onDragEnd={onDragEnd}>
         <div style={{ display: 'flex', gap: '20px', width: '100%', overflowX: 'auto' }}>
           {currentColumns.map((col) => (
@@ -88,6 +88,7 @@ function KanbanBoard({ args, setComponentValue }: KanbanComponentProps): ReactEl
                             margin: '0 0 8px 0',
                             borderRadius: '4px',
                             background: '#fff',
+                            fontFamily: 'Inter, system-ui, sans-serif',
                             border: `2px solid ${card.color || '#000'}`,
                             ...provided.draggableProps.style,
                           }}
