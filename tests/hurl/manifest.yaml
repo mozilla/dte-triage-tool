@@ -3,3 +3,6 @@ get_suites:
 get_cases_from_suite:
     result: pass
     variables-file: get_cases_from_suite
+get_bug:
+    result: pass
+    variables-file: bugzilla
