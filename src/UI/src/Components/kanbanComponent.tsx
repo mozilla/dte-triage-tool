@@ -15,10 +15,6 @@ interface Column {
   cards: Card[];
 }
 
-interface KanbanArgs {
-  columns?: Column[];
-}
-
 interface KanbanComponentProps extends ComponentProps {
   setComponentValue?: (value: any) => void;
 }
@@ -97,7 +93,7 @@ function KanbanBoard({ args, setComponentValue }: KanbanComponentProps): ReactEl
                           {card.fields?.map((field, i) => (
                             <div key={i}>{field}</div>
                           ))}
-                          <a target='_blank' href={`https://mozilla.testrail.io/index.php?/cases/view/${card.id}`}>Go to Test Case</a>
+                          <a target='_blank' rel="noreferrer" href={`https://mozilla.testrail.io/index.php?/cases/view/${card.id}`}>Go to Test Case</a>
                         </div>
                       )}
                     </Draggable>

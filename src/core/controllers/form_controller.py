@@ -2,7 +2,7 @@ import streamlit as st
 
 from src.core.state import SessionState
 from src.core.triage import Triage
-from src.config.types import FormValues, KanbanColumn
+from src.config.types import FormValues
 from src.core.util import Util
 
 AUTOMATION_STATUSES = [
