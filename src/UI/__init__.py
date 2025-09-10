@@ -3,7 +3,8 @@ import streamlit.components.v1 as components
 
 _RELEASE = True
 
-if not _RELEASE:
+if _RELEASE:
+    # if release mode, UI is running on the server otherwise UI is built locally.
     _component_func = components.declare_component(
         "kanban",
         url="http://localhost:3001",
