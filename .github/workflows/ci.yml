@@ -37,11 +37,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-      - name: Build the project
+      - name: Install npm dependencies
         working-directory: ./src/UI
-        run: |
-          npm install
-          npm run build
+        run: npm install
       - name: Setup Hurl
         run: brew install hurl
       - name: Setup UV
