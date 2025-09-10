@@ -3,13 +3,18 @@ Tool to support Desktop Test Engineering triage test cases for future automation
 
 ## Setup
 You will need to build the UI before starting up streamlit.
-Inside `src/ui/`:
+Inside `src/UI/`:
 
 * `npm install`
+
+If you wish to run the custom component in a separate serve, then:
+* `npm run start`
+
+Otherwise, to build the UI component:
 * `npm run build`
 
-Then run the streamlit app:
-* `streamlit run main.py`
+After either starting the UI server or building the component, run the streamlit app from the root of the project:
+* `uv run streamlit run main.py`
 
 ## Environment
 

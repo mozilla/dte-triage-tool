@@ -1,9 +1,9 @@
 import os
 import streamlit.components.v1 as components
 
-_RELEASE = True
+_RELEASE = os.path.exists(os.path.join(os.path.dirname(__file__), "build"))
 
-if _RELEASE:
+if not _RELEASE:
     # if release mode, UI is running on the server otherwise UI is built locally.
     _component_func = components.declare_component(
         "kanban",
