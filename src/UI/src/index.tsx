@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import KanbanBoard from "./MyComponent";
+import KanbanBoard from "./Components/kanbanComponent";
 
 ReactDOM.render(
   <React.StrictMode>

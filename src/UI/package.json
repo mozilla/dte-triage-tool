@@ -1,5 +1,5 @@
 {
-  "name": "my_component",
+  "name": "DTE Triage Tool Component",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
