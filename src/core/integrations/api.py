@@ -6,7 +6,7 @@ from urllib.parse import quote
 
 class TestRailAPIClient:
     """
-    Generic API session.
+    TestRail API session.
 
     Attributes:
     ===========
@@ -15,9 +15,9 @@ class TestRailAPIClient:
       The "home" of the instance in question.
 
     local: bool
-      Assign True if communicating with an instance of an API on localhost.
+      Assign True if communicating with an instance of an TestRail API on localhost.
     """
-    def __init__(self, base_url, local):
+    def __init__(self, base_url, local=False):
         self.name = "TestRail"
         self.user = ""
         self.password = ""
@@ -102,6 +102,18 @@ class TestRailAPIClient:
 
 
 class BugzillaAPIClient:
+    """
+    Bugzilla API session.
+
+    Attributes:
+    ===========
+
+    base_url: str
+      The "home" of the instance in question.
+
+    local: bool
+      Assign True if communicating with an instance of an Bugzilla API on localhost.
+    """
     def __init__(self, base_url, local):
         self.name = "Bugzilla"
         if not base_url.endswith("/"):
