@@ -33,6 +33,13 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.13.2"
+      - name: Use Node.js version from .nvmrc
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+      - name: Install npm dependencies
+        working-directory: ./src/UI
+        run: npm install
       - name: Setup Hurl
         run: brew install hurl
       - name: Setup UV

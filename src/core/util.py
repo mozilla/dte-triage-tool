@@ -1,3 +1,4 @@
+from src.config.types import KanbanColumn
 from src.core.state import SessionState
 
 
@@ -25,3 +26,13 @@ class Util:
         Give a tuple entry of an int and str, extract the int ids and return a comma separated string of the ids.
         """
         return ",".join([str(id) for id, _ in data])
+
+    @staticmethod
+    def index_cases_by_status(board: list[KanbanColumn]):
+        """
+            Given a board list, map the test cases by automation status.
+        """
+        cases_by_status = {}
+        for col in board:
+            cases_by_status[col['id']] = col['cards']
+        return cases_by_status
