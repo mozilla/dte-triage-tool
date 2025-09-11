@@ -124,6 +124,7 @@ class BugzillaAPIClient:
     def __send_request(self, method, uri, data=None, **kwargs):
         params = kwargs.get("params") or {}
         if kwargs.get("secure"):
+            logging.warning("secure send")
             params["api_key"] = self.api_key
 
         url = self.__url + uri
@@ -132,6 +133,7 @@ class BugzillaAPIClient:
         if method == "POST" or method == "PUT":
             # TODO: Handle BZ attachments
             if params:
+                logging.warning(f"params {params}")
                 response = requests.post(url, params=params, json=data)
             else:
                 response = requests.post(url, json=data)
@@ -146,7 +148,8 @@ class BugzillaAPIClient:
             try:
                 error = response.json()
             except (
-                requests.exceptions.HTTPError
+                requests.exceptions.HTTPError,
+                requests.exceptions.JSONDecodeError
             ):  # response.content not formatted as JSON
                 error = str(response.content)
             raise APIError(
@@ -162,11 +165,11 @@ class BugzillaAPIClient:
     def send_get(self, uri, filepath=None, **kwargs):
         return self.__send_request("GET", uri, filepath, **kwargs)
 
-    def send_post(self, uri, data):
-        return self.__send_request("POST", uri, data)
+    def send_post(self, uri, data, **kwargs):
+        return self.__send_request("POST", uri, data, **kwargs)
 
-    def send_put(self, uri, data):
-        return self.__send_request("PUT", uri, data)
+    def send_put(self, uri, data, **kwargs):
+        return self.__send_request("PUT", uri, data, **kwargs)
 
 class APIError(Exception):
     pass

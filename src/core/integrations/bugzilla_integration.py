@@ -5,12 +5,12 @@ class Bugzilla:
 
     def __init__(self, host, local=False):
         self.client = BugzillaAPIClient(host,local)
-        if not environ.get("BUGZILLA_API_KEY"):
+        if not local and not environ.get("BUGZILLA_API_KEY"):
             raise BugzillaAPIClient.APIError(
-                "Bugzilla instance requires either API key"
+                "Bugzilla instance requires an API key"
             )
         else:
-            self.api_key = environ.get("BUGZILLA_API_KEY")
+            self.client.api_key = environ.get("BUGZILLA_API_KEY")
 
     def get_bug(self, bug_id, secure=False):
         return self.client.send_get(
@@ -33,7 +33,8 @@ class Bugzilla:
                 "summary": summary,
                 "version": "unspecified",
                 "type": "task"
-            }
+            },
+            secure=True
         )
 
     def update_bug(
@@ -46,5 +47,6 @@ class Bugzilla:
             data={
                 "ids": bug_ids,
                 **payload
-            }
+            },
+            secure=True
         )
