@@ -1,7 +1,6 @@
 import base64
 import requests
 import logging
-from urllib.parse import quote
 
 
 class TestRailAPIClient:
