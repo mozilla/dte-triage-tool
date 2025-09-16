@@ -15,36 +15,32 @@ AUTOMATION_STATUSES = [
 
 
 class TriageFormController:
+
     def __init__(self, state=None):
         self.triage = Triage().get_instance()
         self.state = state if state else SessionState()
 
     def set_inputs(self):
-        """Set the inputs for the form"""
-        available_priorities = [
-            (priority["id"], priority["name"])
-            for priority in self.triage.get_and_cache_priorities()
-        ]
-        return {
-            "project_id": st.text_input("Project ID", "17", key="project-id-input"),
-            "suite_id": st.text_input("Suite ID", "2054", key="suite-id-input"),
-            "priority_id": st.multiselect(
-                "Priority ID", available_priorities, key="priority-input"
-            ),
-            "automation_status": st.multiselect(
-                "Automation Status", AUTOMATION_STATUSES, key="automation-status-input"
-            ),
-            "limit": st.text_input("Limit", 100),
-        }
+        """ Set the inputs for the form"""
+        available_priorities = [(priority['id'], priority['name']) for priority in
+                                self.triage.get_and_cache_priorities()]
+        return {'project_id': st.text_input("Project ID", "17", key="project-id-input"),
+                'suite_id': st.text_input("Suite ID", "2054", key="suite-id-input"),
+                'priority_id': st.multiselect("Priority ID", available_priorities, default=[available_priorities[0]],
+                                              key="priority-input"),
+                'automation_status': st.multiselect("Automation Status", AUTOMATION_STATUSES,
+                                                    default=[AUTOMATION_STATUSES[0]], key="automation-status-input"),
+                'limit': st.text_input("Limit", 5)}
 
-    def query_and_save(self, form_values: FormValues) -> tuple[bool, str]:
+    def query_and_save(self, form_values: FormValues) -> tuple[dict, str]:
         """
         Save the form data to the session state.
         """
+        self.state.clear_initial_board()
+        self.state.clear_board()
         required = ("project_id", "suite_id", "priority_id", "automation_status")
-        self.state.clear_test_cases()
         if not all(k in form_values and form_values.get(k) for k in required):
-            return False, "Please fill in all required fields."
+            return {}, "Please fill in all required fields."
         extracted_data = {
             "project_id": int(form_values.get("project_id")),
             "suite_id": int(form_values.get("suite_id")),
@@ -56,8 +52,8 @@ class TriageFormController:
         }
         try:
             test_cases = self.triage.fetch_test_cases(extracted_data)
-            self.state.set_test_cases(test_cases)
-            return True, "Success"
+            return test_cases, "Success"
         except Exception as e:
-            self.state.clear_test_cases()
-            return False, str(e)
+            self.state.clear_initial_board()
+            self.state.clear_board()
+            return {}, str(e)
