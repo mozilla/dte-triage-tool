@@ -6,6 +6,7 @@ import logging
 
 BUG_ID = 1935731
 
+
 def test_bugzilla_get_bug():
     load_dotenv()
     bz = Bugzilla(environ.get("BUGZILLA_BASE_URL"))

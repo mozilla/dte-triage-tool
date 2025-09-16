@@ -16,6 +16,7 @@ class TestRailAPIClient:
     local: bool
       Assign True if communicating with an instance of an TestRail API on localhost.
     """
+
     def __init__(self, base_url, local=False):
         self.name = "TestRail"
         self.user = ""
@@ -113,6 +114,7 @@ class BugzillaAPIClient:
     local: bool
       Assign True if communicating with an instance of an Bugzilla API on localhost.
     """
+
     def __init__(self, base_url, local):
         self.name = "Bugzilla"
         if not base_url.endswith("/"):
@@ -133,7 +135,7 @@ class BugzillaAPIClient:
             # TODO: Handle BZ attachments
             if params:
                 logging.warning(f"params {params}")
-                response = requests.post(url, params=params, json=data)
+                response = requests.request(method, url, params=params, json=data)
             else:
                 response = requests.post(url, json=data)
         else:
@@ -148,7 +150,7 @@ class BugzillaAPIClient:
                 error = response.json()
             except (
                 requests.exceptions.HTTPError,
-                requests.exceptions.JSONDecodeError
+                requests.exceptions.JSONDecodeError,
             ):  # response.content not formatted as JSON
                 error = str(response.content)
             raise APIError(
@@ -169,6 +171,7 @@ class BugzillaAPIClient:
 
     def send_put(self, uri, data, **kwargs):
         return self.__send_request("PUT", uri, data, **kwargs)
+
 
 class APIError(Exception):
     pass
