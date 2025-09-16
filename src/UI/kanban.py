@@ -41,10 +41,11 @@ class Kanban:
         """
             Displays the Kanban board with the fetched test cases.
         """
+        print("here")
         if test_cases:
             changed_board = kanban(test_cases, f"board_{len(test_cases)}")
-            if changed_board:
-                self.board_controller.update_board(changed_board)
+            print(changed_board)
+                # self.board_controller.update_board(changed_board)
         else:
             st.info("No test cases found.\nChange search criteria and retry.")
 
