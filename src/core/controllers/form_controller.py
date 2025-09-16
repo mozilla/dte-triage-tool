@@ -41,7 +41,6 @@ class TriageFormController(BaseController):
         """
         self.clear_on_fetch()
         self.state.set_form_values(form_values)
-        print(self.state.get_status_map())
         required = ("project_id", "suite_id", "priority_id", "automation_status")
         if not all(k in form_values and form_values.get(k) for k in required):
             return {}, "Please fill in all required fields."
