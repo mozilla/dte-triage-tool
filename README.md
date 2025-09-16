@@ -52,3 +52,16 @@ We use `playwright` to test our UI. See documentation at the
 We use `pytest` to bring it all together.
 * [Pytest documentation](https://docs.pytest.org/en/stable/)
 * [Pytest Playwright](https://playwright.dev/python/docs/test-runners)
+
+We store secrets securely. Please note the following:
+* Do not use the `-u` flag in hurl when writing test harness logic, this
+  exposes secrets to the public in the GHA readouts in event of a failure.
+* We save the entire value of the `.env` file as a secret in GHA, which
+  contains the following keys:
+  * TESTRAIL_BASE_URL
+  * TESTRAIL_USERNAME
+  * TESTRAIL_API_KEY
+  * BUGZILLA_BASE_URL
+  * BUGZILLA_API_KEY
+  * fx_desk_id=17
+* To obtain values, please talk to Ben C to be added to the vault.
