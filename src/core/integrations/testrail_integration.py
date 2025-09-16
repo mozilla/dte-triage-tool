@@ -64,3 +64,7 @@ class TestRail:
     def get_case_fields(self):
         """Get available case fields."""
         return self.client.send_get("get_case_fields")
+
+    def update_test_cases(self, payload, suite_id):
+        """ update the test cases of the given suite id with the given payload. """
+        return self.client.send_post(f"update_cases/{suite_id}", payload)

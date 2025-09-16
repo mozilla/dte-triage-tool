@@ -39,7 +39,7 @@ function KanbanBoard({ args }: KanbanComponentProps): ReactElement {
     initialColumns && Array.isArray(initialColumns) ? initialColumns : []
   );
 
-  const [movedCards, setMovedCards] = useState<MovedCards>({});
+  const [movedCards, setMovedCards] = useState<MovedCards[]>([{}]);
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
@@ -53,6 +53,7 @@ function KanbanBoard({ args }: KanbanComponentProps): ReactElement {
     }
 
     const newColumns = Array.from(currentColumns);
+    const newMovedCards = Array.from(movedCards).at(0) || {};
     const sourceColIndex = newColumns.findIndex(
       (col) => col.id === source.droppableId
     );
@@ -66,21 +67,21 @@ function KanbanBoard({ args }: KanbanComponentProps): ReactElement {
     );
     newColumns[destColIndex].cards.splice(destination.index, 0, droppedCard);
 
-    if (movedCards[droppedCard.id]) {
-      if (movedCards[droppedCard.id][0] === destination.droppableId) {
-        delete movedCards[droppedCard.id];
+    if (newMovedCards[droppedCard.id]) {
+      if (newMovedCards[droppedCard.id][0] === destination.droppableId) {
+        delete newMovedCards[droppedCard.id];
       } else {
-        movedCards[droppedCard.id][1] = destination.droppableId;
+        newMovedCards[droppedCard.id][1] = destination.droppableId;
       }
     } else {
-      movedCards[droppedCard.id] = [
+      newMovedCards[droppedCard.id] = [
         source.droppableId,
         destination.droppableId,
       ];
     }
-    setMovedCards(movedCards);
+    setMovedCards([newMovedCards]);
     setCurrentColumns(newColumns);
-    console.log(movedCards);
+    console.log([newMovedCards]);
   };
 
   useEffect(() => {

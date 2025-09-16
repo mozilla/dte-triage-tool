@@ -1,32 +1,29 @@
 from src.config.types import KanbanColumn
-from src.core.state import SessionState
+from src.core.controllers.base_controller import BaseController
 from src.core.util import Util
+import pandas as pd
 
 
-class BoardController:
+class BoardController(BaseController):
     """
         class to control changes in the board.
     """
 
     def __init__(self, state=None):
-        self.state = state if state else SessionState()
-        self.status_translation = {
-            1: "Status Untriaged",
-            2: "Status Suitable",
-            3: "Status Unsuitable",
-            4: "Status Completed",
-            5: "Status Disabled"
-        }
-        self.priority_translation = {
-            1: "Priority Low",
-            2: "Priority Medium",
-            3: "Priority High",
-            4: "Priority Critical"
-        }
+        super().__init__(state)
 
-    def update_board(self, board):
-        self.state.clear_board()
-        self.state.set_board(board)
+    def update_status_map(self, updated_cases):
+        """ Update the status map for test cases."""
+        self.state.clear_status_map()
+        self.state.set_status_map(updated_cases)
+
+    def format_status_map(self):
+        """ format the updated status map for the kanban board to csv format."""
+        current_status_map = self.state.get_status_map()
+        status_map = [{"Test Case ID": k, "Original Status": v[0], "Current Status": v[1]} for k, v in
+                      current_status_map.items()]
+        df = pd.DataFrame(status_map, columns=self.csv_headers)
+        return df
 
     def normalize_and_save_data(self, test_cases: dict[str, list[dict] | dict]) -> list[KanbanColumn]:
         """
@@ -48,5 +45,4 @@ class BoardController:
                  "color": Util.priority_color(test_case['priority_id'])})
         initial_board = list(cols.values())
         self.state.set_initial_board(initial_board)
-        self.state.set_board(initial_board)
         return initial_board

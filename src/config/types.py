@@ -18,7 +18,7 @@ class SessionKey(str, Enum):
     FORM_VALUES = "form_values"
     INITIAL_BOARD = "initial_board"
     AVAILABLE_PRIORITIES = "available_priorities"
-    CURRENT_BOARD = "current_board"
+    STATUS_MAP = "test_case_status_map"
 
 
 class Priority(TypedDict):
@@ -31,6 +31,7 @@ class Priority(TypedDict):
     is_default: bool
 
 class TestCase(TypedDict):
+
     """ TestCase object. """
     id: int
     name: str
@@ -38,6 +39,7 @@ class TestCase(TypedDict):
     color: str
 
 class KanbanColumn(TypedDict):
+
     """ KanbanColumn object """
     id: str
     title: str

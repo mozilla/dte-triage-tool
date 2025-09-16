@@ -25,7 +25,6 @@ class Kanban:
                 test_cases, msg = self.form_controller.query_and_save(form_values)
                 if test_cases:
                     self.board_controller.normalize_and_save_data(test_cases)
-                    st.success("Test cases fetched.")
                 else:
                     st.warning(msg)
 
@@ -37,15 +36,29 @@ class Kanban:
         else:
             st.info("Please configure the triage settings in the sidebar and click 'Fetch Test Cases'.")
 
+    def commit(self):
+        """ Commit the changes in the test cases to test rail. """
+        st.sidebar.warning("Changes Detected")
+        st.sidebar.button("Commit Changes", on_click=self.show_changes, key="commit-button")
+
+    @st.dialog("Current Changes:", on_dismiss="rerun")
+    def show_changes(self):
+        """ Dialog to show the changes in the status of the test cases."""
+        formated_status_map = self.board_controller.format_status_map()
+        st.table(formated_status_map)
+        submitted = st.button("Submit to TestRail", on_click=self.form_controller.commit_changes_to_testrail, key="submit-button")
+        if submitted:
+            self.form_controller.clear_on_fetch()
+            st.rerun(scope="app")
+
     def display_kanban_board(self, test_cases):
         """
             Displays the Kanban board with the fetched test cases.
         """
-        print("here")
         if test_cases:
-            changed_board = kanban(test_cases, f"board_{len(test_cases)}")
-            print(changed_board)
-                # self.board_controller.update_board(changed_board)
+            updated_cases = kanban(test_cases, str(test_cases))
+            if updated_cases:
+                self.board_controller.update_status_map(updated_cases[0])
         else:
             st.info("No test cases found.\nChange search criteria and retry.")
 
@@ -53,3 +66,5 @@ class Kanban:
         self.header()
         self.sidebar()
         self.body()
+        if self.board_controller.state.has_status_map():
+            self.commit()
