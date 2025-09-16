@@ -1,5 +1,7 @@
 GET {{TESTRAIL_BASE_URL}}/index.php?/api/v2/get_suites/{{fx_desk_id}}
 Content-Type: application/json
+[BasicAuth]
+{{TESTRAIL_USERNAME}}: {{TESTRAIL_API_KEY}}
 HTTP 200
 [Asserts]
 jsonpath "$.size" > 50

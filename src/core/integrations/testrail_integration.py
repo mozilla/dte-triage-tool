@@ -1,7 +1,7 @@
 from typing import Optional
 
 from src.config.types import FormValues
-from src.core.integrations.api import APIClient
+from src.core.integrations.api import TestRailAPIClient
 
 
 class TestRail:
@@ -26,7 +26,7 @@ class TestRail:
     """
 
     def __init__(self, host, username, password, local=False):
-        self.client = APIClient(host, local)
+        self.client = TestRailAPIClient(host, local)
         self.client.user = username
         self.client.password = password
 

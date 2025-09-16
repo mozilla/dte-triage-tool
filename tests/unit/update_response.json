@@ -1,0 +1,17 @@
+{
+    "bugs": [
+        {
+            "last_change_time": "%timestamp%",
+            "id": "%Ibug_id%",
+            "changes":
+                {
+                    "blocks":
+                        {
+                            "removed": "",
+                            "added": "%bug_id%"
+                        }
+                },
+            "alias":null
+        }
+    ]
+}
