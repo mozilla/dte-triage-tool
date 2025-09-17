@@ -2,12 +2,13 @@ import pytest
 import json
 from pytest_httpserver import HTTPServer
 from datetime import datetime
+from pathlib import Path
 
 from random import randint
 
-CREATE_RESPONSE_FILE = "tests/unit/create_response.json"
-UPDATE_RESPONSE_FILE = "tests/unit/update_response.json"
-
+SOURCE_LOC = "tests/unit"
+def get_payload(endpoint, payload_type):
+    return json.load(Path(SOURCE_LOC, f"{endpoint}_{payload_type}.json").open())
 
 def create_timestamp():
     return datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -33,20 +34,14 @@ def mock_bugzilla(httpserver: HTTPServer):
     httpserver.expect_request(
         "/rest/bug",
         query_string={"api_key": "abcdefghijklmnop"},
-        json={
-            "component": "STArFox",
-            "product": "Mozilla QA",
-            "summary": "Test Bug Please Ignore",
-            "version": "unspecified",
-            "type": "task",
-        },
+        json=get_payload("create", "request"),
         method="POST",
-    ).respond_with_json(set_response(json.load(open(CREATE_RESPONSE_FILE))))
+    ).respond_with_json(get_payload("create", "response"))
     httpserver.expect_request(
         "/rest/bug",
         query_string={"api_key": "abcdefghijklmnop"},
-        json={"ids": [1234], "blocks": {"add": [4321]}},
+        json=get_payload("update", "request"),
         method="PUT",
-    ).respond_with_json(set_response(json.load(open(UPDATE_RESPONSE_FILE))))
+    ).respond_with_json(get_payload("update", "response"))
     httpserver.expect_request("/rest/bug")
     yield httpserver
