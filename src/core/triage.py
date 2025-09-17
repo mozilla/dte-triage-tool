@@ -29,12 +29,14 @@ class Triage:
 
     @classmethod
     def get_instance(cls):
-        """Returns the instance of Triage Class."""
+        """
+            Returns the instance of Triage Class.
+        """
         return cls._instance or cls()
 
     def fetch_test_cases(self, extracted_data: FormValues):
         """
-        Fetches test cases from TestRail based on the provided criteria.
+            Fetches test cases from TestRail based on the provided criteria.
         """
         return self.tr_session.get_test_cases(extracted_data)
 
