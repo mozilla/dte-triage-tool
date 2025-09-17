@@ -30,9 +30,9 @@ class Util:
     @staticmethod
     def index_cases_by_status(board: list[KanbanColumn]):
         """
-            Given a board list, map the test cases by automation status.
+        Given a board list, map the test cases by automation status.
         """
         cases_by_status = {}
         for col in board:
-            cases_by_status[col['id']] = col['cards']
+            cases_by_status[col["id"]] = col["cards"]
         return cases_by_status

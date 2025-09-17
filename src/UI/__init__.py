@@ -14,6 +14,7 @@ else:
     build_dir = os.path.join(parent_dir, "build")
     _component_func = components.declare_component("kanban", path=build_dir)
 
+
 def kanban(columns, key=None):
     """
     Displays the kanban component.
