@@ -6,7 +6,7 @@ import pandas as pd
 
 class BoardController(BaseController):
     """
-        class to control changes in the board.
+    class to control changes in the board.
     """
 
     def __init__(self, state=None):
@@ -25,24 +25,32 @@ class BoardController(BaseController):
         df = pd.DataFrame(status_map, columns=self.csv_headers)
         return df
 
-    def normalize_and_save_data(self, test_cases: dict[str, list[dict] | dict]) -> list[KanbanColumn]:
+    def normalize_and_save_data(
+        self, test_cases: dict[str, list[dict] | dict]
+    ) -> list[KanbanColumn]:
         """
-            Takes the test case data and formats it for the kanban board view and saves it to the session state.
+        Takes the test case data and formats it for the kanban board view and saves it to the session state.
         """
-        test_cases = test_cases.get('cases', [])
+        test_cases = test_cases.get("cases", [])
         cols: dict[str, KanbanColumn] = {
-            status: {
-                "id": status.lower(),
-                "title": status,
-                "cards": []
-            } for status in self.status_translation.values()
+            status: {"id": status.lower(), "title": status, "cards": []}
+            for status in self.status_translation.values()
         }
         for test_case in test_cases:
-            case_automation_status = self.status_translation[test_case['custom_automation_status']]
-            cols[case_automation_status]['cards'].append(
-                {"id": str(test_case['id']), "name": test_case['title'],
-                 "fields": [f"{self.priority_translation[test_case['priority_id']]}"],
-                 "color": Util.priority_color(test_case['priority_id'])})
+            case_automation_status = self.status_translation[
+                test_case["custom_automation_status"]
+            ]
+            cols[case_automation_status]["cards"].append(
+                {
+                    "id": str(test_case["id"]),
+                    "name": test_case["title"],
+                    "fields": [
+                        f"{self.priority_translation[test_case['priority_id']]}"
+                    ],
+                    "color": Util.priority_color(test_case["priority_id"]),
+                }
+            )
         initial_board = list(cols.values())
         self.state.set_initial_board(initial_board)
+
         return initial_board
