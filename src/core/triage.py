@@ -22,7 +22,7 @@ class Triage:
         )
         self.state = state if state else SessionState()
 
-    def __new__(cls):
+    def __new__(cls, state=None):
         """New Instance of Triage Class if not already created."""
         if cls._instance is None:
             cls._instance = super(Triage, cls).__new__(cls)
@@ -30,7 +30,9 @@ class Triage:
 
     @classmethod
     def get_instance(cls):
-        """Returns the instance of Triage Class."""
+        """
+        Returns the instance of Triage Class.
+        """
         return cls._instance or cls()
 
     def fetch_test_cases(self, extracted_data: FormValues):
@@ -46,3 +48,13 @@ class Triage:
         available_priorities: list[Priority] = self.tr_session.get_priorities()
         self.state.set_priorities(available_priorities)
         return available_priorities
+
+    def update_case_automation_statuses(self, formated_data: dict[str, list[int]]):
+        """update the automation status of the test cases."""
+        suite_id = self.state.get_form_values().get("suite_id")
+        for status_code, test_cases in formated_data.items():
+            payload = {
+                "case_ids": test_cases,
+                "custom_automation_status": status_code,
+            }
+            self.tr_session.update_test_cases(payload, suite_id)

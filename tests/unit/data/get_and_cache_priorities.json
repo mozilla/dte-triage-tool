@@ -1,0 +1,62 @@
+{
+  "output": [
+    {
+      "id": 1,
+      "is_default": "False",
+      "name": "Low",
+      "priority": 1,
+      "short_name": "Low"
+    },
+    {
+      "id": 2,
+      "is_default": "True",
+      "name": "Medium",
+      "priority": 2,
+      "short_name": "Medium"
+    },
+    {
+      "id": 3,
+      "is_default": "False",
+      "name": "High",
+      "priority": 3,
+      "short_name": "High"
+    },
+    {
+      "id": 4,
+      "is_default": "False",
+      "name": "Critical",
+      "priority": 4,
+      "short_name": "Critical"
+    }
+  ],
+  "expected": [
+    {
+      "id": 1,
+      "is_default": "False",
+      "name": "Low",
+      "priority": 1,
+      "short_name": "Low"
+    },
+    {
+      "id": 2,
+      "is_default": "True",
+      "name": "Medium",
+      "priority": 2,
+      "short_name": "Medium"
+    },
+    {
+      "id": 3,
+      "is_default": "False",
+      "name": "High",
+      "priority": 3,
+      "short_name": "High"
+    },
+    {
+      "id": 4,
+      "is_default": "False",
+      "name": "Critical",
+      "priority": 4,
+      "short_name": "Critical"
+    }
+  ]
+}

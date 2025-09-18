@@ -59,16 +59,22 @@ class SessionState:
         if self.has_initial_board():
             del self._state[SessionKey.INITIAL_BOARD]
 
-    # Current Board
-    def get_board(self) -> list[KanbanColumn] | None:
-        return self._state.get(SessionKey.CURRENT_BOARD)
+    # Updated Test Cases Status Map
+    def get_status_map(self):
+        return self._state.get(SessionKey.STATUS_MAP)
 
-    def set_board(self, board: list[KanbanColumn]):
-        self._state[SessionKey.CURRENT_BOARD] = board
+    def set_status_map(self, status_map):
+        self._state[SessionKey.STATUS_MAP] = status_map
 
-    def has_board(self):
-        return self.get_board() is not None
+    def has_status_map(self):
+        return bool(self.get_status_map())
 
-    def clear_board(self):
-        if self.has_board():
-            del self._state[SessionKey.CURRENT_BOARD]
+    def clear_status_map(self):
+        if self.has_status_map():
+            del self._state[SessionKey.STATUS_MAP]
+
+    def clear_cache(self):
+        """Clear all the cached data."""
+        keys = list(self._state.keys())
+        for key in keys:
+            self._state.pop(key)
