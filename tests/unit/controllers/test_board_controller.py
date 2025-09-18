@@ -1,6 +1,5 @@
 import pytest
 from src.core.controllers.board_controller import BoardController
-from src.core.state import SessionState
 from src.core.util import Util
 
 @pytest.fixture
