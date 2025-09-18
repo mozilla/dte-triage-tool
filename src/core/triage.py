@@ -20,6 +20,9 @@ class Triage:
             Settings.testrail_api_key,
             local,
         )
+        self.bz_session = Bugzilla(
+
+        )
         self.state = state if state else SessionState()
 
     def __new__(cls, state=None):
@@ -58,3 +61,4 @@ class Triage:
                 "custom_automation_status": status_code,
             }
             self.tr_session.update_test_cases(payload, suite_id)
+            self.bz_session.create_bug_structure(suite_id, test_cases)
