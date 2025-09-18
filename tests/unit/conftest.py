@@ -9,14 +9,17 @@ from src.core.triage import Triage
 
 SOURCE_LOC = "tests/unit"
 
+
 @pytest.fixture(autouse=True)
 def reset_singleton():
     Triage._instance = None
     yield
     Triage._instance = None
 
+
 def get_payload(endpoint, payload_type):
     return json.load(Path(SOURCE_LOC, f"{endpoint}_{payload_type}.json").open())
+
 
 @pytest.fixture
 def mock_tr_session(mocker):
@@ -24,6 +27,7 @@ def mock_tr_session(mocker):
     mock = MagicMock()
     mock_tr.return_value = mock
     return mock
+
 
 @pytest.fixture()
 def mock_bugzilla(httpserver: HTTPServer):
@@ -41,10 +45,12 @@ def mock_bugzilla(httpserver: HTTPServer):
     ).respond_with_json(get_payload("update", "response"))
     httpserver.expect_request("/rest/bug")
     yield httpserver
-    
+
+
 @pytest.fixture
 def session_state():
     return SessionState({"state": True})
+
 
 @pytest.fixture
 def triage(session_state, mock_tr_session):
