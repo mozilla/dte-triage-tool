@@ -9,12 +9,12 @@ class BaseController:
             2: "Status Suitable",
             3: "Status Unsuitable",
             4: "Status Completed",
-            5: "Status Disabled"
+            5: "Status Disabled",
         }
         self.priority_translation = {
             1: "Priority Low",
             2: "Priority Medium",
             3: "Priority High",
-            4: "Priority Critical"
+            4: "Priority Critical",
         }
         self.csv_headers = ["Test Case ID", "Original Status", "Current Status"]

@@ -17,23 +17,36 @@ AUTOMATION_STATUSES = [
 
 
 class TriageFormController(BaseController):
-
     def __init__(self, state=None):
         super().__init__(state)
         self.triage = Triage().get_instance()
-        self.inverted_status_translation = {v.lower(): k for k, v in self.status_translation.items()}
+        self.inverted_status_translation = {
+            v.lower(): k for k, v in self.status_translation.items()
+        }
 
     def set_inputs(self):
-        """ Set the inputs for the form"""
-        available_priorities = [(priority['id'], priority['name']) for priority in
-                                self.triage.get_and_cache_priorities()]
-        return {'project_id': st.text_input("Project ID", "73", key="project-id-input"),
-                'suite_id': st.text_input("Suite ID", "68103", key="suite-id-input"),
-                'priority_id': st.multiselect("Priority ID", available_priorities, default=available_priorities,
-                                              key="priority-input"),
-                'automation_status': st.multiselect("Automation Status", AUTOMATION_STATUSES,
-                                                    default=AUTOMATION_STATUSES, key="automation-status-input"),
-                'limit': st.text_input("Limit", 5)}
+        """Set the inputs for the form"""
+        available_priorities = [
+            (priority["id"], priority["name"])
+            for priority in self.triage.get_and_cache_priorities()
+        ]
+        return {
+            "project_id": st.text_input("Project ID", "73", key="project-id-input"),
+            "suite_id": st.text_input("Suite ID", "68103", key="suite-id-input"),
+            "priority_id": st.multiselect(
+                "Priority ID",
+                available_priorities,
+                default=available_priorities,
+                key="priority-input",
+            ),
+            "automation_status": st.multiselect(
+                "Automation Status",
+                AUTOMATION_STATUSES,
+                default=AUTOMATION_STATUSES,
+                key="automation-status-input",
+            ),
+            "limit": st.text_input("Limit", 5),
+        }
 
     def query_and_save(self, form_values: FormValues) -> tuple[dict, str]:
         """
@@ -60,7 +73,7 @@ class TriageFormController(BaseController):
             return {}, str(e)
 
     def commit_changes_to_testrail(self):
-        """ Commit the changes in the test cases to test rail. """
+        """Commit the changes in the test cases to test rail."""
         status_map = self.state.get_status_map()
         grouped_tc = defaultdict(list)
         for tc_id, status_change in status_map.items():
@@ -70,7 +83,7 @@ class TriageFormController(BaseController):
         return self.triage.update_case_automation_statuses(grouped_tc)
 
     def clear_on_fetch(self):
-        """ Clear the form values and initial board data. """
+        """Clear the form values and initial board data."""
         self.state.clear_initial_board()
         self.state.clear_status_map()
         self.state.clear_form_values()

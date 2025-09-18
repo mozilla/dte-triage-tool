@@ -3,6 +3,7 @@ from src.core.state import SessionState
 from src.config.setting import Settings
 from src.config.types import Priority, FormValues
 
+
 class Triage:
     """
     Class used to interact with the TestRail & Bugzilla API integrations.
@@ -30,13 +31,13 @@ class Triage:
     @classmethod
     def get_instance(cls):
         """
-            Returns the instance of Triage Class.
+        Returns the instance of Triage Class.
         """
         return cls._instance or cls()
 
     def fetch_test_cases(self, extracted_data: FormValues):
         """
-            Fetches test cases from TestRail based on the provided criteria.
+        Fetches test cases from TestRail based on the provided criteria.
         """
         return self.tr_session.get_test_cases(extracted_data)
 
@@ -49,7 +50,7 @@ class Triage:
         return available_priorities
 
     def update_case_automation_statuses(self, formated_data: dict[str, list[int]]):
-        """ update the automation status of the test cases. """
+        """update the automation status of the test cases."""
         suite_id = self.state.get_form_values().get("suite_id")
         for status_code, test_cases in formated_data.items():
             payload = {
