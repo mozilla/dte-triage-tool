@@ -23,7 +23,7 @@ jobs:
       - name: Lint
         run: uv run ruff check
       - name: Format
-        run: uv run ruff format
+        run: uv run ruff format --check
   run-pytests:
     runs-on: macos-latest
     steps:
