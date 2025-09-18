@@ -13,15 +13,17 @@ class BoardController(BaseController):
         super().__init__(state)
 
     def update_status_map(self, updated_cases):
-        """ Update the status map for test cases."""
+        """Update the status map for test cases."""
         self.state.clear_status_map()
         self.state.set_status_map(updated_cases)
 
     def format_status_map(self):
-        """ format the updated status map for the kanban board to csv format."""
+        """format the updated status map for the kanban board to csv format."""
         current_status_map = self.state.get_status_map()
-        status_map = [{"Test Case ID": k, "Original Status": v[0], "Current Status": v[1]} for k, v in
-                      current_status_map.items()]
+        status_map = [
+            {"Test Case ID": k, "Original Status": v[0], "Current Status": v[1]}
+            for k, v in current_status_map.items()
+        ]
         df = pd.DataFrame(status_map, columns=self.csv_headers)
         return df
 

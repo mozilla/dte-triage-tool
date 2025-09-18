@@ -9,6 +9,7 @@ from src.core.triage import Triage
 
 SOURCE_LOC = "tests/unit"
 
+
 @pytest.fixture(autouse=True)
 def reset_singleton():
     Triage._instance = None
@@ -23,13 +24,16 @@ def mock_tr_session(mocker):
     mock_tr.return_value = mock
     return mock
 
+
 @pytest.fixture
 def state():
     return SessionState({"state": True})
 
+
 @pytest.fixture
 def triage(state, mock_tr_session):
     return Triage(state=state)
+
 
 def get_payload(endpoint, payload_type):
     return json.load(Path(SOURCE_LOC, f"{endpoint}_{payload_type}.json").open())

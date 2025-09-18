@@ -17,8 +17,14 @@ class TestUtil:
     def test_priority_color(self, priority_id, expected):
         assert Util.priority_color(priority_id) == expected
 
-    @pytest.mark.parametrize("data, expected",
-                             [([], ""), ([(1, "Low")], "1"), ([(1, "Low"), (3, "High"), (2, "Medium")], "1,3,2")])
+    @pytest.mark.parametrize(
+        "data, expected",
+        [
+            ([], ""),
+            ([(1, "Low")], "1"),
+            ([(1, "Low"), (3, "High"), (2, "Medium")], "1,3,2"),
+        ],
+    )
     def test_extract_and_concat_ids(self, data, expected):
         assert Util.extract_and_concat_ids(data) == expected
 

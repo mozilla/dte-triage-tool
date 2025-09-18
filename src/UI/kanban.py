@@ -41,16 +41,22 @@ class Kanban:
             )
 
     def commit(self):
-        """ Commit the changes in the test cases to test rail. """
+        """Commit the changes in the test cases to test rail."""
         st.sidebar.warning("Changes Detected")
-        st.sidebar.button("Commit Changes", on_click=self.show_changes, key="commit-button")
+        st.sidebar.button(
+            "Commit Changes", on_click=self.show_changes, key="commit-button"
+        )
 
     @st.dialog("Current Changes:", on_dismiss="rerun")
     def show_changes(self):
-        """ Dialog to show the changes in the status of the test cases."""
+        """Dialog to show the changes in the status of the test cases."""
         formated_status_map = self.board_controller.format_status_map()
         st.table(formated_status_map)
-        submitted = st.button("Submit to TestRail", on_click=self.form_controller.commit_changes_to_testrail, key="submit-button")
+        submitted = st.button(
+            "Submit to TestRail",
+            on_click=self.form_controller.commit_changes_to_testrail,
+            key="submit-button",
+        )
         if submitted:
             self.form_controller.clear_on_fetch()
             st.rerun(scope="app")
