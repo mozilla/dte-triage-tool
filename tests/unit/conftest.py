@@ -20,9 +20,9 @@ def mock_tr_session(mocker):
     return mock
 
 @pytest.fixture
-def state():
+def session_state():
     return SessionState({"state": True})
 
 @pytest.fixture
-def triage(state, mock_tr_session):
-    return Triage(state=state)
+def triage(session_state, mock_tr_session):
+    return Triage(state=session_state)

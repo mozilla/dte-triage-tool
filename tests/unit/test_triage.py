@@ -28,16 +28,16 @@ class TestTriage:
         assert out == expected_data
         mock_tr_session.get_test_cases.assert_called_once_with(input_data)
 
-    def test_get_and_cache_priorities_empty_state(self, triage, state, mock_tr_session, load_data):
+    def test_get_and_cache_priorities_empty_state(self, triage, session_state, mock_tr_session, load_data):
         mock_output = load_data('get_and_cache_priorities.json')['output']
         mock_tr_session.get_priorities.return_value = mock_output
         out = triage.get_and_cache_priorities()
         assert out == mock_output
         mock_tr_session.get_priorities.assert_called_once()
-        assert state.get_priorities() == mock_output
+        assert session_state.get_priorities() == mock_output
 
-    def test_get_and_cache_priorities_populated_state(self, triage, state, mock_tr_session, load_data):
+    def test_get_and_cache_priorities_populated_state(self, triage, session_state, mock_tr_session, load_data):
         mock_output = load_data('get_and_cache_priorities.json')['output']
-        state.set_priorities(mock_output)
+        session_state.set_priorities(mock_output)
         triage.get_and_cache_priorities()
         mock_tr_session.get_priorities.assert_not_called()

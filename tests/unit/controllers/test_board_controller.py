@@ -4,10 +4,6 @@ from src.core.state import SessionState
 from src.core.util import Util
 
 @pytest.fixture
-def session_state():
-    return SessionState(state={"state": True})
-
-@pytest.fixture
 def controller(session_state):
     return BoardController(state=session_state)
 
