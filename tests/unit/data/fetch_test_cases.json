@@ -1,0 +1,89 @@
+{
+  "input": {
+    "custom_automation_status": "1,2,3,4,5",
+    "limit": 5,
+    "priority_id": "1,2,3,4",
+    "project_id": 73,
+    "suite_id": 68103
+  },
+  "output": {
+    "cases": [
+      {
+        "custom_automation_status": 1,
+        "id": 3078021,
+        "priority_id": 2,
+        "title": "Verify that user cannot modify OS Authentication pref for passwords from about:config"
+      },
+      {
+        "custom_automation_status": 1,
+        "id": 3078022,
+        "priority_id": 3,
+        "title": "Verify that user cannot modify OS Authentication pref for credit cards from about:config"
+      },
+      {
+        "custom_automation_status": 2,
+        "id": 3078023,
+        "priority_id": 4,
+        "title": "Verify that OS Auth checkbox is disabled by default for new profiles"
+      },
+      {
+        "custom_automation_status": 2,
+        "id": 3078024,
+        "priority_id": 2,
+        "title": "Verify that user can modify OS Auth option from about:preferences for Passwords"
+      },
+      {
+        "custom_automation_status": 3,
+        "id": 3078025,
+        "priority_id": 2,
+        "title": "Verify that user can modify OS Auth option from about:preferences for Payment Methods"
+      },
+      {
+        "custom_automation_status": 4,
+        "id": 3078026,
+        "priority_id": 1,
+        "title": "Verify that user can modify OS Auth option"
+      }
+    ]
+  },
+  "expected": {
+    "cases": [
+      {
+        "custom_automation_status": 1,
+        "id": 3078021,
+        "priority_id": 2,
+        "title": "Verify that user cannot modify OS Authentication pref for passwords from about:config"
+      },
+      {
+        "custom_automation_status": 1,
+        "id": 3078022,
+        "priority_id": 3,
+        "title": "Verify that user cannot modify OS Authentication pref for credit cards from about:config"
+      },
+      {
+        "custom_automation_status": 2,
+        "id": 3078023,
+        "priority_id": 4,
+        "title": "Verify that OS Auth checkbox is disabled by default for new profiles"
+      },
+      {
+        "custom_automation_status": 2,
+        "id": 3078024,
+        "priority_id": 2,
+        "title": "Verify that user can modify OS Auth option from about:preferences for Passwords"
+      },
+      {
+        "custom_automation_status": 3,
+        "id": 3078025,
+        "priority_id": 2,
+        "title": "Verify that user can modify OS Auth option from about:preferences for Payment Methods"
+      },
+      {
+        "custom_automation_status": 4,
+        "id": 3078026,
+        "priority_id": 1,
+        "title": "Verify that user can modify OS Auth option"
+      }
+    ]
+  }
+}

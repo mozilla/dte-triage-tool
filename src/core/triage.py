@@ -21,7 +21,7 @@ class Triage:
         )
         self.state = state if state else SessionState()
 
-    def __new__(cls):
+    def __new__(cls, state=None):
         """New Instance of Triage Class if not already created."""
         if cls._instance is None:
             cls._instance = super(Triage, cls).__new__(cls)
