@@ -1,8 +1,10 @@
 from src.core.integrations.testrail_integration import TestRail
+from src.core.integrations.bugzilla_integration import Bugzilla
 from src.core.state import SessionState
 from src.config.setting import Settings
 from src.config.types import Priority, FormValues
 
+FUNCTIONAL_ROOT_METABUG = 1976270
 
 class Triage:
     """
@@ -14,6 +16,7 @@ class Triage:
 
     def __init__(self, state=None):
         local = Settings.testrail_base_url.split("/")[2].startswith("127")
+        # TODO: standardize how we're getting API keys
         self.tr_session = TestRail(
             Settings.testrail_base_url,
             Settings.testrail_username,
@@ -21,7 +24,7 @@ class Triage:
             local,
         )
         self.bz_session = Bugzilla(
-
+            Settings.bugzilla_base_url
         )
         self.state = state if state else SessionState()
 
@@ -61,4 +64,5 @@ class Triage:
                 "custom_automation_status": status_code,
             }
             self.tr_session.update_test_cases(payload, suite_id)
-            self.bz_session.create_bug_structure(suite_id, test_cases)
+            bz_content_payload = self.tr_session.get_bugzilla_content(payload, suite_id)
+            self.bz_session.create_bug_structure(FUNCTIONAL_ROOT_METABUG, bz_content_payload)
