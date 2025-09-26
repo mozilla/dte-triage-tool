@@ -9,8 +9,9 @@ DEFAULT_CREATE_PAYLOAD = {
     "product": "Mozilla QA",
     "summary": "Test Bug Please Ignore",
     "version": "unspecified",
-    "type": "task"
+    "type": "task",
 }
+
 
 def populate_template(structure, element, content, case_id=None):
     loc = Path(TEMPLATE_LOC, f"bugzilla_{structure}_template_{element}.md")
@@ -24,6 +25,7 @@ def populate_template(structure, element, content, case_id=None):
                 output = output.replace(f"%{subfield}%", str(content[field][subfield]))
         output = output.replace(f"%{field}%", str(content[field]))
     return output
+
 
 class Bugzilla:
     def __init__(self, host, local=False):
@@ -39,7 +41,9 @@ class Bugzilla:
     def search_bug(self, query_payload: dict, secure=False):
         return self.client.send_get("rest/bug", params=query_payload, secure=secure)
 
-    def create_bug(self, summary: str, product="Mozilla QA", component="STArFox", **kwargs):
+    def create_bug(
+        self, summary: str, product="Mozilla QA", component="STArFox", **kwargs
+    ):
         return self.client.send_post(
             "rest/bug",
             data={
@@ -48,7 +52,7 @@ class Bugzilla:
                 "summary": summary,
                 "version": "unspecified",
                 "type": "task",
-                **kwargs
+                **kwargs,
             },
             secure=True,
         )
@@ -67,19 +71,12 @@ class Bugzilla:
             logging.warning(f"Created bug {new_bug_id}")
             new_bug_ids.append(new_bug_id)
         update_response = self.update_bug(
-            new_bug_ids,
-            {
-                "blocks": {
-                    "add": [blocked_bug_id]
-                }
-            }
+            new_bug_ids, {"blocks": {"add": [blocked_bug_id]}}
         )
         return [bug.get("id") for bug in update_response.get("bugs")]
 
     def create_blocking_bug(self, parameters, blocked_bug_id):
-        return self.create_blocking_bugs(
-            [parameters],
-            blocked_bug_id)[0]
+        return self.create_blocking_bugs([parameters], blocked_bug_id)[0]
 
     def create_bug_structure(self, root_bug_id, content_payload):
         suite_bug_name = populate_template("suite", "title", content_payload)
@@ -93,7 +90,7 @@ class Bugzilla:
                     "summary": suite_bug_name,
                     "description": suite_bug_body,
                 },
-                root_bug_id
+                root_bug_id,
             )
             # Indexing on results for get_bug and search_bug is necessary
             suite_bug = self.get_bug(suite_bug_id).get("bugs")[0]
@@ -113,7 +110,9 @@ class Bugzilla:
             logging.warning(f"matches {case_matches}")
             if not case_matches.get("bugs"):
                 logging.warning("not case matches")
-                case_bug_body = populate_template("case", "body", case_ | content_payload)
+                case_bug_body = populate_template(
+                    "case", "body", case_ | content_payload
+                )
                 case_params.append(
                     {
                         "summary": case_bug_name,
@@ -123,4 +122,3 @@ class Bugzilla:
         if case_params:
             logging.warning("case_params")
             self.create_blocking_bugs(case_params, suite_bug["id"])
-

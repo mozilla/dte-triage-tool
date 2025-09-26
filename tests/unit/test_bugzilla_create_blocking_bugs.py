@@ -7,6 +7,7 @@ import logging
 
 import pytest
 
+
 @pytest.mark.parametrize("db_case", [1, 2, 3])
 def test_create_blocking_bugs(load_data, db_case):
     mock_bz_db = load_data(f"bugzilla_database_{db_case}")
@@ -23,12 +24,7 @@ def test_create_blocking_bugs(load_data, db_case):
         return {"bugs": [bug for bug in mock_bz_db if bug.get("id") == bug_id]}
 
     def create_bug(**kwargs):
-        mock_bz_db.append(
-            {
-                "id": len(mock_bz_db) + 1,
-                **kwargs
-            }
-        )
+        mock_bz_db.append({"id": len(mock_bz_db) + 1, **kwargs})
         return {"id": len(mock_bz_db)}
 
     def update_bug(bug_ids: list, payload: dict):
@@ -51,11 +47,8 @@ def test_create_blocking_bugs(load_data, db_case):
                 {
                     "id": bug_id,
                     "changes": {
-                        "blocks": {
-                            "removed": "",
-                            "added": payload.get("blocks")
-                        }
-                    }
+                        "blocks": {"removed": "", "added": payload.get("blocks")}
+                    },
                 }
             )
         return changes
@@ -64,12 +57,15 @@ def test_create_blocking_bugs(load_data, db_case):
     data = load_data("bugzilla_structure")
     mock_methods = ["get_bug", "search_bug", "create_bug", "update_bug"]
     test_input = data.get("input")
-    contexts = [mock.patch.object(mock_bugzilla, method, wraps=locals().get(method)) for method in mock_methods]
+    contexts = [
+        mock.patch.object(mock_bugzilla, method, wraps=locals().get(method))
+        for method in mock_methods
+    ]
     with ExitStack() as exit_stack:
         for cm in contexts:
             exit_stack.enter_context(cm)
-        out = mock_bugzilla.create_bug_structure(**test_input)
-        #assert data.get("expected") == out
+        mock_bugzilla.create_bug_structure(**test_input)
+        # assert data.get("expected") == out
         with open("test_output.json", "w") as fh:
             json.dump(mock_bz_db, fh, indent=2)
         assert mock_bz_db == load_data("bugzilla_database_key")

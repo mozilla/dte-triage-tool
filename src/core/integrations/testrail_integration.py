@@ -5,6 +5,7 @@ from src.core.integrations.api import TestRailAPIClient
 
 CASE_VIEW_URL = "index.php?/cases/view"
 
+
 class TestRail:
     """
     Object describing all necessary API endpoints (and related data handling
@@ -108,14 +109,16 @@ class TestRail:
                 for step in case_["custom_steps_separated"]:
                     if step.get("content"):
                         test_steps = test_steps + step["content"] + "\n"
-            case_link = "/".join([self.client.get_base_url(), CASE_VIEW_URL, str(case_id)])
+            case_link = "/".join(
+                [self.client.get_base_url(), CASE_VIEW_URL, str(case_id)]
+            )
             bugzilla_content["cases"].append(
                 {
                     "case_description": description,
                     "case_id": case_id,
                     "repo_dir": repo_dir,
                     "test_steps": test_steps,
-                    "case_link": case_link
+                    "case_link": case_link,
                 }
             )
         return bugzilla_content

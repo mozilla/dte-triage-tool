@@ -30,12 +30,14 @@ def mock_tr_session(mocker):
     mock_tr.return_value = mock
     return mock
 
+
 @pytest.fixture
 def mock_bz_session(mocker):
     mock_bz = mocker.patch("src.core.triage.Bugzilla")
     mock = MagicMock()
     mock_bz.return_value = mock
     return mock
+
 
 @pytest.fixture()
 def mock_bugzilla(httpserver: HTTPServer):
@@ -63,6 +65,7 @@ def session_state():
 @pytest.fixture
 def triage(session_state, mock_tr_session):
     return Triage(state=session_state)
+
 
 @pytest.fixture
 def load_data():

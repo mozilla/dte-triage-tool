@@ -8,6 +8,7 @@ from datetime import datetime
 
 FUNCTIONAL_ROOT_METABUG = 1976270
 
+
 class Triage:
     """
     Class used to interact with the TestRail & Bugzilla API integrations.
@@ -25,9 +26,7 @@ class Triage:
             Settings.testrail_api_key,
             local,
         )
-        self.bz_session = Bugzilla(
-            Settings.bugzilla_base_url
-        )
+        self.bz_session = Bugzilla(Settings.bugzilla_base_url)
         self.state = state if state else SessionState()
 
     def __new__(cls, state=None):
@@ -67,9 +66,11 @@ class Triage:
                 "custom_automation_status": status_code,
             }
             self.tr_session.update_test_cases(payload, suite_id)
-            bz_content_payload |= self.tr_session.get_bugzilla_content(payload, suite_id)
+            bz_content_payload |= self.tr_session.get_bugzilla_content(
+                payload, suite_id
+            )
         timestamp = datetime.utcnow().strftime("%Y-%m-%dT%H_%M_%SZ")
         with open(f"session_{timestamp}.json", "w") as fh:
             json.dump(bz_content_payload, fh, indent=2)
         # TODO: Eventually, need to consider re-enabling this
-            # self.bz_session.create_bug_structure(FUNCTIONAL_ROOT_METABUG, bz_content_payload)
+        # self.bz_session.create_bug_structure(FUNCTIONAL_ROOT_METABUG, bz_content_payload)

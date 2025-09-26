@@ -3,11 +3,7 @@ from src.core.integrations.testrail_integration import TestRail
 
 
 def test_bugzilla_payload_gen(load_data):
-    mock_testrail = TestRail(
-        "https://testrail.example.com",
-        "fakeuser",
-        "fakepass"
-    )
+    mock_testrail = TestRail("https://testrail.example.com", "fakeuser", "fakepass")
     data = load_data("bugzilla_payload")
     get_suite_return = data.get("output").get("get_suite")
     get_case_return = data.get("output").get("get_case")
