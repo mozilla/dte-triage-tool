@@ -73,6 +73,10 @@ class TestRailAPIClient:
                 except requests.exceptions.HTTPError:
                     return {}
 
+    def get_base_url(self):
+        """Return the base URL"""
+        return "/".join(self.__url.split("/")[:3])
+
     def send_get(self, uri, filepath=None):
         """Issue a GET request (read) against the API.
 
@@ -135,13 +139,13 @@ class BugzillaAPIClient:
             # TODO: Handle BZ attachments
             if params:
                 logging.warning(f"params {params}")
+                logging.warning(f"  data {data}")
                 response = requests.request(method, url, params=params, json=data)
             else:
                 response = requests.post(url, json=data)
         else:
             if params:
                 response = requests.get(url, params=params)
-                logging.info(response.request.url)
             else:
                 response = requests.get(url)
 
@@ -153,6 +157,7 @@ class BugzillaAPIClient:
                 requests.exceptions.JSONDecodeError,
             ):  # response.content not formatted as JSON
                 error = str(response.content)
+            print(f"request: {response.request.url}")
             raise APIError(
                 "Bugzilla API returned HTTP %s (%s)" % (response.status_code, error)
             )

@@ -1,21 +1,3 @@
-import json
-import os
-
-import pytest
-
-current_dir = os.path.dirname(__file__)
-DATA_DIR = os.path.join(current_dir, "data")
-
-
-@pytest.fixture
-def load_data():
-    def _load(name: str):
-        with open(os.path.join(DATA_DIR, name)) as f:
-            return json.load(f)
-
-    return _load
-
-
 class TestTriage:
     def test_fetch_test_cases_parametrized(self, triage, mock_tr_session, load_data):
         # get data and save in variables

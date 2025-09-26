@@ -10,4 +10,6 @@ class Settings:
     testrail_base_url: str = os.environ.get("TESTRAIL_BASE_URL", "")
     testrail_username: str = os.environ.get("TESTRAIL_USERNAME", "")
     testrail_api_key: str = os.environ.get("TESTRAIL_API_KEY", "")
+    bugzilla_base_url: str = os.environ.get("BUGZILLA_BASE_URL", "")
+    bugzilla_api_key: str = os.environ.get("BUGZILLA_API_KEY", "")
     project_id: int = int(os.environ.get("TESTRAIL_PROJECT_ID", "17"))

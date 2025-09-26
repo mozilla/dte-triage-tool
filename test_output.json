@@ -1,0 +1,49 @@
+[
+  {
+    "id": 1,
+    "summary": "Root Bug",
+    "depends_on": [
+      2
+    ]
+  },
+  {
+    "id": 2,
+    "component": "STArFox",
+    "product": "Mozilla QA",
+    "summary": "[Meta] Expand functional test coverage for Test Feature feature test suite (S200)",
+    "version": "unspecified",
+    "type": "task",
+    "description": "Meta bug to track further expansion of functional test coverage for the Test Feature test suite.",
+    "blocks": [
+      1
+    ],
+    "depends_on": [
+      3,
+      4
+    ]
+  },
+  {
+    "id": 3,
+    "component": "STArFox",
+    "product": "Mozilla QA",
+    "summary": "[Test Feature] Create test for Test Foo",
+    "version": "unspecified",
+    "type": "task",
+    "description": "Create test for Test Feature manual test case: Test Foo\n\nTestRail test ID: [111](https://testrail.example.com/index.php?/cases/view/111)\nSTArFox test suite: tabs\n\nTest Steps:\n\nTestSteps\n\nTestEnd",
+    "blocks": [
+      2
+    ]
+  },
+  {
+    "id": 4,
+    "component": "STArFox",
+    "product": "Mozilla QA",
+    "summary": "[Test Feature] Create test for Test Bar",
+    "version": "unspecified",
+    "type": "task",
+    "description": "Create test for Test Feature manual test case: Test Bar\n\nTestRail test ID: [222](https://testrail.example.com/index.php?/cases/view/222)\nSTArFox test suite: geolocation\n\nTest Steps:\n\nTestStepsB\n\nTestEndB",
+    "blocks": [
+      2
+    ]
+  }
+]
