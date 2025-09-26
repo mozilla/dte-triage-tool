@@ -1,0 +1,50 @@
+{
+    "input": {
+        "suite_id": 1,
+        "payload": {
+            "case_ids": [2, 3],
+            "custom_automation_status": 2
+        }
+    },
+    "output": {
+        "get_suite": {
+            "name": "Test Suite"
+        },
+        "get_case": {
+            "title": "Test Case",
+            "custom_automation_test_names": "tests/find_toolbar/test_find_toolbar.py",
+            "custom_preconds": "A",
+            "custom_steps": "B",
+            "custom_steps_separated": [
+                {
+                    "content": "C",
+                    "foo": "bar"
+                },
+                {
+                    "content": "D",
+                    "lorem": "ipsum"
+                }
+            ]
+        }
+    },
+    "expected": {
+        "suite_id": 1,
+        "suite_name": "Test Suite",
+        "cases": [
+            {
+                "case_description": "Test Case",
+                "case_id": 2,
+                "repo_dir": "find_toolbar",
+                "test_steps": "A\n\nB\n\nC\nD\n",
+                "case_link": "https://testrail.example.com/index.php?/cases/view/2" 
+            },
+            {
+                "case_description": "Test Case",
+                "case_id": 3,
+                "repo_dir": "find_toolbar",
+                "test_steps": "A\n\nB\n\nC\nD\n",
+                "case_link": "https://testrail.example.com/index.php?/cases/view/3" 
+            }
+        ]
+    }
+}

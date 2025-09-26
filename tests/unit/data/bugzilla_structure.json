@@ -1,0 +1,28 @@
+{
+    "input": {
+        "root_bug_id": 1,
+        "content_payload": {
+            "suite_id": 200,
+            "suite_name": "Test Feature",
+            "cases": [
+                {
+                    "case_description": "Test Foo",
+                    "case_id": 111,
+                    "repo_dir": "tabs",
+                    "test_steps": "TestSteps\n\nTestEnd",
+                    "case_link": "https://testrail.example.com/index.php?/cases/view/111"
+                },
+                {
+                    "case_description": "Test Bar",
+                    "case_id": 222,
+                    "repo_dir": "geolocation",
+                    "test_steps": "TestStepsB\n\nTestEndB",
+                    "case_link": "https://testrail.example.com/index.php?/cases/view/222"
+                }
+            ]
+        }
+    },
+    "output": {
+    },
+    "expected": {}
+}

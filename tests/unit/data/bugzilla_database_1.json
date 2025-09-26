@@ -1,0 +1,28 @@
+[
+    {
+        "id": 1,
+        "summary": "Root Bug",
+        "depends_on": [2]
+    },
+    {
+        "id": 2,
+        "summary": "[Meta] Expand functional test coverage for Test Feature feature test suite (S200)",
+        "blocks": [1],
+        "depends_on": [3],
+        "component": "STArFox",
+        "description": "Meta bug to track further expansion of functional test coverage for the Test Feature test suite.",
+        "product": "Mozilla QA",
+        "type": "task",
+        "version": "unspecified"
+    },
+    {
+        "id": 3,
+        "summary": "[Test Feature] Create test for Test Foo",
+        "blocks": [2],
+        "component": "STArFox",
+        "description": "Create test for Test Feature manual test case: Test Foo\n\nTestRail test ID: [111](https://testrail.example.com/index.php?/cases/view/111)\nSTArFox test suite: tabs\n\nTest Steps:\n\nTestSteps\n\nTestEnd",
+        "product": "Mozilla QA",
+        "type": "task",
+        "version": "unspecified"
+    }
+]
