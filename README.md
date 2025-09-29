@@ -1,5 +1,22 @@
 # dte-triage-tool
+
 Tool to support Desktop Test Engineering triage test cases for future automation
+
+## Pre-setup
+
+The tool requires a `.env` file to exist on the root of the directory where you
+cloned the repository. Please do not name this file anything else, and **DO NOT
+SAVE SECRETS** to any other file, as you will likely push those secrets to our
+upstream, where anyone can see them. The following values need to be set:
+
+* `TESTRAIL_BASE_URL=https://mozilla.testrail.io`
+* `TESTRAIL_USERNAME=<valid testrail username>`
+* `TESTRAIL_API_KEY=<valid testrail api key>`
+* `BUGZILLA_BASE_URL=https://bugzilla.mozilla.org`
+* `BUGZILLA_API_KEY=<valid bugzilla api key>`
+
+To obtain usernames and API keys for DTE service accounts, please talk to Ben C
+to be added to the vault or receive a secure link.
 
 ## Setup
 
@@ -90,11 +107,4 @@ We store secrets securely. Please note the following:
 * Do not use the `-u` flag in hurl when writing test harness logic, this
   exposes secrets to the public in the GHA readouts in event of a failure.
 * We save the entire value of the `.env` file as a secret in GHA, which
-  contains the following keys:
-  * TESTRAIL_BASE_URL
-  * TESTRAIL_USERNAME
-  * TESTRAIL_API_KEY
-  * BUGZILLA_BASE_URL
-  * BUGZILLA_API_KEY
-  * fx_desk_id=17
-* To obtain values, please talk to Ben C to be added to the vault.
+  contains the keys mentioned in the "Pre-Setup" section.
