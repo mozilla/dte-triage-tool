@@ -3,6 +3,8 @@ from typing import Optional
 from src.config.types import FormValues
 from src.core.integrations.api import TestRailAPIClient
 
+CASE_VIEW_URL = "index.php?/cases/view"
+
 
 class TestRail:
     """
@@ -68,3 +70,55 @@ class TestRail:
     def update_test_cases(self, payload, suite_id):
         """update the test cases of the given suite id with the given payload."""
         return self.client.send_post(f"update_cases/{suite_id}", payload)
+
+    def get_suite(self, suite_id):
+        """Return the suite object"""
+        return self.client.send_get(f"get_suite/{suite_id}")
+
+    def get_case(self, case_id):
+        """Return the test case object"""
+        return self.client.send_get(f"get_case/{case_id}")
+
+    def get_bugzilla_content(self, payload, suite_id):
+        """
+        Given a payload for updating cases and a suite id, get necessary content
+        to create a suite metabug and testcase automation bugs
+        """
+        if payload.get("custom_automation_status") != 2:
+            return {}
+        bugzilla_content = {
+            "suite_id": suite_id,
+        }
+        suite = self.get_suite(suite_id)
+        bugzilla_content["suite_name"] = suite.get("name")
+        bugzilla_content["cases"] = []
+        for case_id in payload.get("case_ids"):
+            case_ = self.get_case(case_id)
+            test_loc = case_.get("custom_automation_test_names")
+            if not test_loc or "/" not in test_loc:
+                repo_dir = None
+            else:
+                repo_dir = test_loc.split("/")[1]
+            test_steps = ""
+            description = case_.get("title")
+            if case_.get("custom_preconds"):
+                test_steps = test_steps + case_["custom_preconds"] + "\n\n"
+            if case_.get("custom_steps"):
+                test_steps = test_steps + case_["custom_steps"] + "\n\n"
+            if case_.get("custom_steps_separated"):
+                for step in case_["custom_steps_separated"]:
+                    if step.get("content"):
+                        test_steps = test_steps + step["content"] + "\n"
+            case_link = "/".join(
+                [self.client.get_base_url(), CASE_VIEW_URL, str(case_id)]
+            )
+            bugzilla_content["cases"].append(
+                {
+                    "case_description": description,
+                    "case_id": case_id,
+                    "repo_dir": repo_dir,
+                    "test_steps": test_steps,
+                    "case_link": case_link,
+                }
+            )
+        return bugzilla_content

@@ -1,0 +1,17 @@
+[
+    {
+        "id": 1,
+        "summary": "Root Bug",
+        "depends_on": [2]
+    },
+    {
+        "id": 2,
+        "summary": "[Meta] Expand functional test coverage for Test Feature feature test suite (S200)",
+        "blocks": [1],
+        "component": "STArFox",
+        "description": "Meta bug to track further expansion of functional test coverage for the Test Feature test suite.",
+        "product": "Mozilla QA",
+        "type": "task",
+        "version": "unspecified"
+    }
+]
