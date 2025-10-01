@@ -2,6 +2,7 @@ from os import environ
 from src.core.integrations.api import BugzillaAPIClient
 from pathlib import Path
 import logging
+import re
 
 TEMPLATE_LOC = "src/data"
 DEFAULT_CREATE_PAYLOAD = {
@@ -10,6 +11,13 @@ DEFAULT_CREATE_PAYLOAD = {
     "summary": "Test Bug Please Ignore",
     "version": "unspecified",
     "type": "task",
+}
+DEFAULT_BLOCK_SEARCH_PAYLOAD = {
+    "query_format": "advanced",
+    "o1": "anyexact",
+    "j_top": "OR",
+    "f1": "blocked",
+    "v1": 1976270
 }
 
 
@@ -40,6 +48,13 @@ class Bugzilla:
 
     def search_bug(self, query_payload: dict, secure=False):
         return self.client.send_get("rest/bug", params=query_payload, secure=secure)
+
+    def search_bug_by_block(self, block: int, secure=False):
+        return self.client.send_get(
+            "rest/bug",
+            params=DEFAULT_BLOCK_SEARCH_PAYLOAD | {"v1": block},
+            secure=secure
+        )
 
     def create_bug(
         self, summary: str, product="Mozilla QA", component="STArFox", **kwargs
@@ -80,7 +95,9 @@ class Bugzilla:
 
     def create_bug_structure(self, root_bug_id, content_payload):
         suite_bug_name = populate_template("suite", "title", content_payload)
-        matching_suites = self.search_bug({"summary": suite_bug_name}).get("bugs")
+        suite_metabugs = self.search_bug_by_block(root_bug_id).get("bugs")
+        matching_suites = [bug for bug in suite_metabugs if f"(S{content_payload.get('suite_id')})" in bug.get("summary")]
+
         logging.warning("a")
         if not matching_suites:
             logging.warning("not matching suite")
@@ -97,18 +114,23 @@ class Bugzilla:
         elif len(matching_suites) == 1:
             logging.warning(f"1 matching_suites: {matching_suites}")
             suite_bug = matching_suites[0]
+            suite_bug_id = suite_bug.get("id")
         else:
             logging.warning("many suites")
             # TODO: is this case an error?
             suite_bug = matching_suites[0]
+            suite_bug_id = suite_bug.get("id")
+
         case_params = []
-        logging.warning("b")
         for case_ in content_payload.get("cases"):
             logging.warning(f"case {case_}")
+            case_re = re.compile(r"TestRail .est ID: \[?" + str(case_.get("case_id")))
             case_bug_name = populate_template("case", "title", case_ | content_payload)
-            case_matches = self.search_bug({"summary": case_bug_name})
+            case_dependencies = self.search_bug_by_block(suite_bug_id).get("bugs")
+            logging.warning(f"cdeps: {case_dependencies}")
+            case_matches = [bug for bug in case_dependencies if case_re.search(bug.get("description"))]
             logging.warning(f"matches {case_matches}")
-            if not case_matches.get("bugs"):
+            if not case_matches:
                 logging.warning("not case matches")
                 case_bug_body = populate_template(
                     "case", "body", case_ | content_payload
@@ -119,6 +141,7 @@ class Bugzilla:
                         "description": case_bug_body,
                     }
                 )
+
         if case_params:
             logging.warning("case_params")
             self.create_blocking_bugs(case_params, suite_bug["id"])
