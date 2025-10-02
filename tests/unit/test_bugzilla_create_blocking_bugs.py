@@ -15,10 +15,16 @@ def test_create_blocking_bugs(load_data, db_case):
     def search_bug(query):
         bugs = deepcopy(mock_bz_db)
         for field, term in query.items():
-            logging.warning(f"search {field}: {term}")
-            logging.warning("\n".join([bug.get(field) for bug in bugs]))
             bugs = [bug for bug in bugs if bug.get(field) == term]
         return {"bugs": bugs}
+
+    def search_bug_by_block(block):
+        bugs = deepcopy(mock_bz_db)
+        return {
+            "bugs": [
+                bug for bug in bugs if bug.get("blocks") and block in bug.get("blocks")
+            ]
+        }
 
     def get_bug(bug_id):
         return {"bugs": [bug for bug in mock_bz_db if bug.get("id") == bug_id]}
@@ -55,7 +61,13 @@ def test_create_blocking_bugs(load_data, db_case):
 
     mock_bugzilla = Bugzilla("https://bugzilla.example.com")
     data = load_data("bugzilla_structure")
-    mock_methods = ["get_bug", "search_bug", "create_bug", "update_bug"]
+    mock_methods = [
+        "get_bug",
+        "search_bug",
+        "search_bug_by_block",
+        "create_bug",
+        "update_bug",
+    ]
     test_input = data.get("input")
     contexts = [
         mock.patch.object(mock_bugzilla, method, wraps=locals().get(method))
