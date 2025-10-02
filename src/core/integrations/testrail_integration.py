@@ -2,7 +2,6 @@ from typing import Optional
 
 from src.config.types import FormValues
 from src.core.integrations.api import TestRailAPIClient
-import re
 
 CASE_VIEW_URL = "index.php?/cases/view"
 

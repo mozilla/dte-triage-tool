@@ -17,7 +17,7 @@ DEFAULT_BLOCK_SEARCH_PAYLOAD = {
     "o1": "anyexact",
     "j_top": "OR",
     "f1": "blocked",
-    "v1": 1976270
+    "v1": 1976270,
 }
 
 
@@ -53,7 +53,7 @@ class Bugzilla:
         return self.client.send_get(
             "rest/bug",
             params=DEFAULT_BLOCK_SEARCH_PAYLOAD | {"v1": block},
-            secure=secure
+            secure=secure,
         )
 
     def create_bug(
@@ -96,7 +96,11 @@ class Bugzilla:
     def create_bug_structure(self, root_bug_id, content_payload):
         suite_bug_name = populate_template("suite", "title", content_payload)
         suite_metabugs = self.search_bug_by_block(root_bug_id).get("bugs")
-        matching_suites = [bug for bug in suite_metabugs if f"(S{content_payload.get('suite_id')})" in bug.get("summary")]
+        matching_suites = [
+            bug
+            for bug in suite_metabugs
+            if f"(S{content_payload.get('suite_id')})" in bug.get("summary")
+        ]
 
         logging.warning("a")
         if not matching_suites:
@@ -128,7 +132,11 @@ class Bugzilla:
             case_bug_name = populate_template("case", "title", case_ | content_payload)
             case_dependencies = self.search_bug_by_block(suite_bug_id).get("bugs")
             logging.warning(f"cdeps: {case_dependencies}")
-            case_matches = [bug for bug in case_dependencies if case_re.search(bug.get("description"))]
+            case_matches = [
+                bug
+                for bug in case_dependencies
+                if case_re.search(bug.get("description"))
+            ]
             logging.warning(f"matches {case_matches}")
             if not case_matches:
                 logging.warning("not case matches")
