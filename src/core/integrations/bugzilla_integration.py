@@ -99,7 +99,7 @@ class Bugzilla:
         matching_suites = [
             bug
             for bug in suite_metabugs
-            if f"(S{content_payload.get('suite_id')})" in bug.get("summary")
+            if f"(S{content_payload.get('suite_id')})" in (bug.get("summary") or "")
         ]
 
         logging.warning("a")
@@ -135,7 +135,7 @@ class Bugzilla:
             case_matches = [
                 bug
                 for bug in case_dependencies
-                if case_re.search(bug.get("description"))
+                if case_re.search(bug.get("description") or "")
             ]
             logging.warning(f"matches {case_matches}")
             if not case_matches:
