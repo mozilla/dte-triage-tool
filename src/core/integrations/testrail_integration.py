@@ -96,7 +96,7 @@ class TestRail:
             case_ = self.get_case(case_id)
             test_loc = case_.get("custom_automation_test_names")
             if not test_loc or "/" not in test_loc:
-                repo_dir = suite.get("name").lower().replace(" ", "_")
+                repo_dir = suite.get("name").lower().replace(" ", "_").replace("/", "_")
             else:
                 repo_dir = test_loc.split("/")[1]
             test_steps = ""
@@ -110,7 +110,7 @@ class TestRail:
                     if step.get("content"):
                         test_steps = test_steps + step["content"] + "\n"
                     if step.get("expected"):
-                        test_steps = test_steps + "\t" + step["expected"] + "\n"
+                        test_steps = test_steps + "- *" + step["expected"] + "*\n"
             case_link = "/".join(
                 [self.client.get_base_url(), CASE_VIEW_URL, str(case_id)]
             )
