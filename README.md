@@ -2,6 +2,11 @@
 
 Tool to support Desktop Test Engineering triage test cases for future automation
 
+## Issue reporting
+
+If you find an issue with this tool, please create a bug on Mozilla's BugZilla
+instance, that blocks [this bug](https://bugzilla.mozilla.org/show_bug.cgi?id=1993049).
+
 ## Pre-setup
 
 The tool requires a `.env` file to exist on the root of the directory where you
