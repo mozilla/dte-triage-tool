@@ -31,7 +31,7 @@ class TriageFormController(BaseController):
             for priority in self.triage.get_and_cache_priorities()
         ]
         return {
-            "project_id": st.text_input("Project ID", "73", key="project-id-input"),
+            "project_id": st.text_input("Project ID", "17", key="project-id-input"),
             "suite_id": st.text_input("Suite ID", "68103", key="suite-id-input"),
             "priority_id": st.multiselect(
                 "Priority ID",

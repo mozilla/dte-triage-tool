@@ -2,6 +2,11 @@
 
 Tool to support Desktop Test Engineering triage test cases for future automation
 
+## Issue reporting
+
+If you find an issue with this tool, please create a bug on Mozilla's BugZilla
+instance, that blocks [this bug](https://bugzilla.mozilla.org/show_bug.cgi?id=1993049).
+
 ## Pre-setup
 
 The tool requires a `.env` file to exist on the root of the directory where you
@@ -42,9 +47,9 @@ app from the root of the project:
 
 ## Usage
 
-The UI should be relatively intuitive but in the alpha version, we default to
-TestRail project 73 (Fx Desktop Graveyard) instead of 17. **If you want to use the
-tool to actually triage test cases in Fx Desktop, change the Project ID to 17.**
+The UI should be relatively intuitive. In the beta version, we default to
+TestRail project 17 (Fx Desktop). **If you want to use the tool to triage test 
+cases in other projects, change the Project ID to the appropriate number.**
 
 Note that the Commit Changes button might be below the break on your browser and
 you will have to scroll the left hand panel to find it.
