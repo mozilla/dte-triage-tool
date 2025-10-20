@@ -9,8 +9,8 @@ class Util:
     @staticmethod
     def priority_color(priority_id):
         """
-            Return a hex color based on priority_id.
-            Adjust mappings as needed to match your TestRail priorities.
+        Return a hex color based on priority_id.
+        Adjust mappings as needed to match your TestRail priorities.
         """
         mapping = {
             4: "#e53935",  # Critical - Red
@@ -23,21 +23,21 @@ class Util:
     @staticmethod
     def extract_and_concat_ids(data: list[tuple[int, str]]) -> str:
         """
-            Give a tuple entry of an int and str, extract the int ids and return a comma-separated string of the ids.
+        Give a tuple entry of an int and str, extract the int ids and return a comma-separated string of the ids.
         """
         return ",".join([str(id) for id, _ in data])
 
     @staticmethod
     def extract_case_ids_from_board(status_code: int, board: list[KanbanColumn]):
         """
-            Given a status code and a board list, extract the case ids for the given status code.
+        Given a status code and a board list, extract the case ids for the given status code.
         """
-        return [card['id'] for card in board[status_code - 1]['cards']]
+        return [card["id"] for card in board[status_code - 1]["cards"]]
 
     @staticmethod
     def index_cases_by_status(board: list[KanbanColumn]):
         """
-            Given a board list, map the test cases by automation status.
+        Given a board list, map the test cases by automation status.
         """
         cases_by_status = {}
         for col in board:

@@ -13,9 +13,11 @@ if __name__ == "__main__":
     for session_file in sys.argv[1:]:
         with open(session_file) as fh:
             session_payload = json.load(fh)
-            session_suite_id = session_payload.get('suite_id')
+            session_suite_id = session_payload.get("suite_id")
             if payload.get(session_suite_id):
-                payload.get(session_suite_id).get('cases').extend(session_payload.get('cases'))
+                payload.get(session_suite_id).get("cases").extend(
+                    session_payload.get("cases")
+                )
             else:
                 payload[session_suite_id] = session_payload
 
