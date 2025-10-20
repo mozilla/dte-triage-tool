@@ -42,7 +42,7 @@ class TriageFormController(BaseController):
             "automation_status": st.multiselect(
                 "Automation Status",
                 AUTOMATION_STATUSES,
-                default=AUTOMATION_STATUSES,`
+                default=AUTOMATION_STATUSES,
                 key="automation-status-input",
             ),
             "limit": st.text_input("Limit", 15),
