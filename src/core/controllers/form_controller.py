@@ -31,8 +31,8 @@ class TriageFormController(BaseController):
             for priority in self.triage.get_and_cache_priorities()
         ]
         return {
-            "project_id": st.text_input("Project ID", "73", key="project-id-input"),
-            "suite_id": st.text_input("Suite ID", "69963", key="suite-id-input"),
+            "project_id": st.text_input("Project ID", "17", key="project-id-input"),
+            "suite_id": st.text_input("Suite ID", "68103", key="suite-id-input"),
             "priority_id": st.multiselect(
                 "Priority ID",
                 available_priorities,
@@ -42,7 +42,7 @@ class TriageFormController(BaseController):
             "automation_status": st.multiselect(
                 "Automation Status",
                 AUTOMATION_STATUSES,
-                default=AUTOMATION_STATUSES,
+                default=AUTOMATION_STATUSES,`
                 key="automation-status-input",
             ),
             "limit": st.text_input("Limit", 15),
