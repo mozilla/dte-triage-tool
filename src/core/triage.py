@@ -2,6 +2,7 @@ from src.core.integrations.testrail_integration import TestRail
 from src.core.integrations.bugzilla_integration import Bugzilla
 from src.core.state import SessionState
 from src.config.setting import Settings
+from src.core.util import Util
 from src.config.types import Priority, FormValues
 import json
 from datetime import datetime
@@ -56,7 +57,7 @@ class Triage:
         self.state.set_priorities(available_priorities)
         return available_priorities
 
-    def update_case_automation_statuses(self, formated_data: dict[str, list[int]]):
+    def update_case_automation_statuses(self, formated_data: dict[int, list[int]]):
         """update the automation status of the test cases."""
         suite_id = self.state.get_form_values().get("suite_id")
         bz_content_payload = {}
@@ -66,7 +67,12 @@ class Triage:
                 "custom_automation_status": status_code,
             }
             self.tr_session.update_test_cases(payload, suite_id)
-            if status_code == "2":
+            if status_code == 2:
+                initial_board = self.state.get_initial_board()
+                initial_suitable_case_ids = list(filter(lambda case_id: case_id not in test_cases,
+                                                        Util.extract_case_ids_from_board(2, initial_board)))
+                if not self.bz_session.find_bugs_by_test_case_ids(initial_suitable_case_ids):
+                    payload["case_ids"].extend(initial_suitable_case_ids)
                 bz_content_payload |= self.tr_session.get_bugzilla_content(
                     payload, suite_id
                 )

@@ -54,5 +54,4 @@ class BoardController(BaseController):
             )
         initial_board = list(cols.values())
         self.state.set_initial_board(initial_board)
-
         return initial_board
