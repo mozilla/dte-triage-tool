@@ -89,7 +89,6 @@ class Bugzilla:
             new_bug_ids, {"blocks": {"add": [blocked_bug_id]}}
         )
         return [bug.get("id") for bug in update_response.get("bugs")]
-
     def create_blocking_bug(self, parameters, blocked_bug_id):
         return self.create_blocking_bugs([parameters], blocked_bug_id)[0]
 
@@ -99,10 +98,8 @@ class Bugzilla:
         matching_suites = [
             bug
             for bug in suite_metabugs
-            if f"(S{content_payload.get('suite_id')})" in (bug.get("summary") or "")
+            if f"(S{content_payload.get('suite_id')})" in (bug.get("summary", ""))
         ]
-
-        logging.warning("a")
         if not matching_suites:
             logging.warning("not matching suite")
             suite_bug_body = populate_template("suite", "body", content_payload)

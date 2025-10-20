@@ -66,9 +66,10 @@ class Triage:
                 "custom_automation_status": status_code,
             }
             self.tr_session.update_test_cases(payload, suite_id)
-            bz_content_payload |= self.tr_session.get_bugzilla_content(
-                payload, suite_id
-            )
+            if status_code == "2":
+                bz_content_payload |= self.tr_session.get_bugzilla_content(
+                    payload, suite_id
+                )
         timestamp = datetime.utcnow().strftime("%Y-%m-%dT%H_%M_%SZ")
         with open(f"session_{timestamp}.json", "w") as fh:
             json.dump(bz_content_payload, fh, indent=2)
