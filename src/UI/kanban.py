@@ -16,9 +16,6 @@ class Kanban:
     @staticmethod
     def header():
         st.title("Test Case Triage Kanban Board")
-        st.markdown(
-            "This tool helps Desktop Test Engineering triage test cases for future automation."
-        )
 
     def sidebar(self):
         with st.sidebar:
@@ -31,9 +28,21 @@ class Kanban:
                 else:
                     st.warning(msg)
 
+    def display_project_suite_header(self):
+        """
+            Display the project and suite name in the header.
+        """
+        with st.container(border=True, height="content", gap="small"):
+            form_values = self.board_controller.state.get_form_values()
+            project = self.form_controller.query_testrail_entry(form_values['project_id'], 'project')
+            suite = self.form_controller.query_testrail_entry(form_values['suite_id'], 'suite')
+            st.markdown(f"**Project**: :blue-background[{project["name"]}]")
+            st.markdown(f"**Suite**: :blue-background[{suite['name']}]")
+
     def body(self):
         # Main content area
         if self.board_controller.state.has_initial_board():
+            self.display_project_suite_header()
             self.display_kanban_board(self.board_controller.state.get_initial_board())
         else:
             st.info(

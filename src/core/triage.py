@@ -47,7 +47,7 @@ class Triage:
         """
         Fetches test cases from TestRail based on the provided criteria.
         """
-        return self.tr_session.get_test_cases(extracted_data)
+        return self.tr_session.get_cases(extracted_data)
 
     def get_and_cache_priorities(self):
         """query priorities if data is not cached. get cached value if available."""
