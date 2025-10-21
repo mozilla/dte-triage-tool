@@ -30,13 +30,17 @@ class Kanban:
 
     def display_project_suite_header(self):
         """
-            Display the project and suite name in the header.
+        Display the project and suite name in the header.
         """
         with st.container(border=True, height="content", gap="small"):
             form_values = self.board_controller.state.get_form_values()
-            project = self.form_controller.query_testrail_entry(form_values['project_id'], 'project')
-            suite = self.form_controller.query_testrail_entry(form_values['suite_id'], 'suite')
-            st.markdown(f"**Project**: :blue-background[{project["name"]}]")
+            project = self.form_controller.query_testrail_entry(
+                form_values["project_id"], "project"
+            )
+            suite = self.form_controller.query_testrail_entry(
+                form_values["suite_id"], "suite"
+            )
+            st.markdown(f"**Project**: :blue-background[{project['name']}]")
             st.markdown(f"**Suite**: :blue-background[{suite['name']}]")
 
     def body(self):

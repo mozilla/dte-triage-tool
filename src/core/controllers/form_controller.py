@@ -51,7 +51,7 @@ class TriageFormController(BaseController):
 
     def query_and_save(self, form_values: FormValues) -> tuple[dict, str]:
         """
-            Save the form data to the session state.
+        Save the form data to the session state.
         """
         self.clear_on_fetch()
         self.state.set_form_values(form_values)
@@ -75,7 +75,7 @@ class TriageFormController(BaseController):
 
     def query_testrail_entry(self, query_id: int, query_key: str):
         """
-            Given an id and a query key, query a testrail entry. (currently project or suite)
+        Given an id and a query key, query a testrail entry. (currently project or suite)
         """
         query = {
             "project": self.triage.tr_session.get_project,
