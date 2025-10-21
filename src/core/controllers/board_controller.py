@@ -24,8 +24,8 @@ class BoardController(BaseController):
         status_map = []
         for k, v in current_status_map.items():
             item = {
-                "Project ID": form_value["project_id"],
-                "Suite ID": form_value["suite_id"],
+                "Project ID": form_value.get("project_id"),
+                "Suite ID": form_value.get("suite_id"),
                 "Test Case ID": k,
                 "Original Status": v[0],
                 "Current Status": v[1],
