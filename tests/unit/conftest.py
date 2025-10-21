@@ -59,7 +59,7 @@ def mock_bugzilla(httpserver: HTTPServer):
 
 @pytest.fixture
 def session_state():
-    return SessionState({"state": True, "form_values": {}})
+    return SessionState({"state": True})
 
 
 @pytest.fixture
