@@ -6,8 +6,10 @@ class FormValues(TypedDict):
     """Input values for the form."""
 
     project_id: int
+    project_name: str
     limit: int
     suite_id: int
+    suite_name: str
     priority_id: list[Tuple[int, str]]
     automation_status: list[Tuple[int, str]]
 

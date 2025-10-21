@@ -17,4 +17,10 @@ class BaseController:
             3: "Priority High",
             4: "Priority Critical",
         }
-        self.csv_headers = ["Test Case ID", "Original Status", "Current Status"]
+        self.csv_headers = [
+            "Project ID",
+            "Suite ID",
+            "Test Case ID",
+            "Original Status",
+            "Current Status",
+        ]

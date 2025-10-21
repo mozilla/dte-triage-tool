@@ -1,4 +1,4 @@
-from src.config.types import KanbanColumn
+from src.config.types import KanbanColumn, FormValues
 from src.core.controllers.base_controller import BaseController
 from src.core.util import Util
 import pandas as pd
@@ -20,10 +20,17 @@ class BoardController(BaseController):
     def format_status_map(self):
         """format the updated status map for the kanban board to csv format."""
         current_status_map = self.state.get_status_map()
-        status_map = [
-            {"Test Case ID": k, "Original Status": v[0], "Current Status": v[1]}
-            for k, v in current_status_map.items()
-        ]
+        form_value: FormValues = self.state.get_form_values()
+        status_map = []
+        for k, v in current_status_map.items():
+            item = {
+                "Project ID": form_value["project_id"],
+                "Suite ID": form_value["suite_id"],
+                "Test Case ID": k,
+                "Original Status": v[0],
+                "Current Status": v[1],
+            }
+            status_map.append(item)
         df = pd.DataFrame(status_map, columns=self.csv_headers)
         return df
 
