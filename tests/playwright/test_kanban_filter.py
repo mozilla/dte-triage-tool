@@ -14,6 +14,8 @@ def modify_env():
 def test_filter_cases(page, local_instance: str, locators: Locators):
     page.goto(local_instance, wait_until="domcontentloaded")
 
+    locators.filter_expander.click()
+
     locators.project_id_input.clear()
     locators.project_id_input.fill(GRAVEYARD_PRJ)
 

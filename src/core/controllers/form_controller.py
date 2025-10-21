@@ -30,16 +30,19 @@ class TriageFormController(BaseController):
             (priority["id"], priority["name"])
             for priority in self.triage.get_and_cache_priorities()
         ]
+        expander = st.expander("Priority and Automation Status")
         return {
             "project_id": st.text_input("Project ID", "17", key="project-id-input"),
-            "suite_id": st.text_input("Suite ID", "68103", key="suite-id-input"),
-            "priority_id": st.multiselect(
+            "project_name": "",
+            "suite_id": st.text_input("Suite ID", "2054", key="suite-id-input"),
+            "suite_name": "",
+            "priority_id": expander.multiselect(
                 "Priority ID",
                 available_priorities,
                 default=available_priorities,
                 key="priority-input",
             ),
-            "automation_status": st.multiselect(
+            "automation_status": expander.multiselect(
                 "Automation Status",
                 AUTOMATION_STATUSES,
                 default=AUTOMATION_STATUSES,
@@ -53,7 +56,6 @@ class TriageFormController(BaseController):
         Save the form data to the session state.
         """
         self.clear_on_fetch()
-        self.state.set_form_values(form_values)
         required = ("project_id", "suite_id", "priority_id", "automation_status")
         if not all(k in form_values and form_values.get(k) for k in required):
             return {}, "Please fill in all required fields."
@@ -66,11 +68,39 @@ class TriageFormController(BaseController):
             ),
             "limit": int(form_values.get("limit")),
         }
+        self.update_project_and_suite_names(form_values)
+        self.state.set_form_values(form_values)
         try:
             test_cases = self.triage.fetch_test_cases(extracted_data)
             return test_cases, "Success"
         except Exception as e:
             return {}, str(e)
+
+    def update_project_and_suite_names(self, form_input: FormValues):
+        """
+        Sets the project and suite names in the form input based on their respective IDs.
+
+        Args:
+            form_input (FormValues): The form input data containing the project and suite IDs.
+        """
+        project = self.query_testrail_entry(
+            int(form_input.get("project_id")), "project"
+        )
+        suite = self.query_testrail_entry(int(form_input.get("suite_id")), "suite")
+        form_input["project_name"] = project.get("name")
+        form_input["suite_name"] = suite.get("name")
+        self.state.set_form_values(form_input)
+
+    def query_testrail_entry(self, query_id: int, query_key: str):
+        """
+        Given an id and a query key, query a testrail entry. (currently project or suite)
+        """
+        query = {
+            "project": self.triage.tr_session.get_project,
+            "suite": self.triage.tr_session.get_suite,
+            "case": self.triage.tr_session.get_case,
+        }
+        return query.get(query_key)(query_id)
 
     def commit_changes_to_testrail(self):
         """Commit the changes in the test cases to test rail."""

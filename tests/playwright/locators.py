@@ -6,6 +6,7 @@ class Locators:
         self.page = page
 
         # locators go here
+        self.filter_expander = self.page.locator(".stExpander")
         self.project_id_input = self.page.locator(".st-key-project-id-input input")
         self.suite_id_input = self.page.locator(".st-key-suite-id-input input")
         self.priority_input = self.page.locator(".st-key-priority-input input")
@@ -20,3 +21,4 @@ class Locators:
         )
 
         self.fetch_button = self.page.locator(".st-key-fetch-button button")
+        self.commit_button = self.page.locator(".st-key-commit-button button")

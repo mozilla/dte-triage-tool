@@ -34,16 +34,7 @@ class TestRail:
 
     # Public Methods
 
-    def get_test_case(self, case_id):
-        """
-        Given a case_id, get the cooresponding test case.
-
-        :param case_id: case_id
-        :return: a test case
-        """
-        return self.client.send_get(f"get_case/{case_id}")
-
-    def get_test_cases(self, query_params: Optional[FormValues]):
+    def get_cases(self, query_params: Optional[FormValues]):
         """
         Get test cases associated with a specific project (and optional filters).
 
@@ -74,6 +65,10 @@ class TestRail:
     def get_suite(self, suite_id):
         """Return the suite object"""
         return self.client.send_get(f"get_suite/{suite_id}")
+
+    def get_project(self, project_id):
+        """Return the project object"""
+        return self.client.send_get(f"get_project/{project_id}")
 
     def get_case(self, case_id):
         """Return the test case object"""

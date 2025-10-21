@@ -24,6 +24,7 @@ class TestBoardController:
                 20: ("Status Suitable", "Status Completed"),
             }
         )
+        session_state.set_form_values({})
         df = controller.format_status_map()
         # check that the headers are set correctly
         assert list(df.columns) == controller.csv_headers
