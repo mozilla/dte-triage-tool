@@ -32,9 +32,9 @@ class TriageFormController(BaseController):
         ]
         expander = st.expander("Priority and Automation Status")
         return {
-            "project_id": st.text_input("Project ID", "73", key="project-id-input"),
+            "project_id": st.text_input("Project ID", "17", key="project-id-input"),
             "project_name": "",
-            "suite_id": st.text_input("Suite ID", "68103", key="suite-id-input"),
+            "suite_id": st.text_input("Suite ID", "2054", key="suite-id-input"),
             "suite_name": "",
             "priority_id": expander.multiselect(
                 "Priority ID",
