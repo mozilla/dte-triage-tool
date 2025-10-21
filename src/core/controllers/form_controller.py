@@ -45,7 +45,7 @@ class TriageFormController(BaseController):
                 default=AUTOMATION_STATUSES,
                 key="automation-status-input",
             ),
-            "limit": st.text_input("Limit", 5),
+            "limit": st.text_input("Limit", 15),
         }
 
     def query_and_save(self, form_values: FormValues) -> tuple[dict, str]:

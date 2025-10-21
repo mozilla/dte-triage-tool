@@ -19,6 +19,7 @@ DEFAULT_BLOCK_SEARCH_PAYLOAD = {
     "f1": "blocked",
     "v1": 1976270,
 }
+FUNCTIONAL_ROOT_METABUG = 1976270
 
 
 def populate_template(structure, element, content, case_id=None):
@@ -93,16 +94,55 @@ class Bugzilla:
     def create_blocking_bug(self, parameters, blocked_bug_id):
         return self.create_blocking_bugs([parameters], blocked_bug_id)[0]
 
+    def find_bugs_by_test_case_id(
+        self, case_id: str, parent_bug_id: int = FUNCTIONAL_ROOT_METABUG
+    ):
+        """
+        Given a suite bug id and a test case id, find all the test case bugs that are blocked on the suite bug.
+        If no suite bug is provided, use the functional root metabug.
+        """
+        # should it be TestRail .est ID: or TestRail test ID: ??
+        case_re = re.compile(r"TestRail .est ID: \[?" + case_id)
+        case_dependencies = self.search_bug_by_block(parent_bug_id).get("bugs")
+        logging.warning(f"case_dependencies: {case_dependencies}")
+        return [
+            bug
+            for bug in case_dependencies
+            if case_re.search(bug.get("description", ""))
+        ]
+
+    def find_bugs_by_test_case_ids(
+        self, case_ids: list[str], parent_bug_id: int = FUNCTIONAL_ROOT_METABUG
+    ):
+        """
+        Given a suite bug id and a test case idw, find all the test case bugs that are blocked on the suite bug.
+        If no suite bug is provided, use the functional root meta bug.
+        """
+        if not case_ids:
+            return []
+        # should it be TestRail .est ID: or TestRail test ID: ??
+        case_res = [
+            re.compile(r"TestRail .est ID: \[?" + case_id) for case_id in case_ids
+        ]
+        case_dependencies = self.search_bug_by_block(parent_bug_id).get("bugs")
+        logging.warning(f"case_dependencies: {case_dependencies}")
+        matching_bugs = []
+        for case_re in case_res:
+            matching_bugs += [
+                bug
+                for bug in case_dependencies
+                if case_re.search(bug.get("description", ""))
+            ]
+        return matching_bugs
+
     def create_bug_structure(self, root_bug_id, content_payload):
         suite_bug_name = populate_template("suite", "title", content_payload)
         suite_metabugs = self.search_bug_by_block(root_bug_id).get("bugs")
         matching_suites = [
             bug
             for bug in suite_metabugs
-            if f"(S{content_payload.get('suite_id')})" in (bug.get("summary") or "")
+            if f"(S{content_payload.get('suite_id')})" in (bug.get("summary", ""))
         ]
-
-        logging.warning("a")
         if not matching_suites:
             logging.warning("not matching suite")
             suite_bug_body = populate_template("suite", "body", content_payload)
@@ -128,15 +168,10 @@ class Bugzilla:
         case_params = []
         for case_ in content_payload.get("cases"):
             logging.warning(f"case {case_}")
-            case_re = re.compile(r"TestRail .est ID: \[?" + str(case_.get("case_id")))
             case_bug_name = populate_template("case", "title", case_ | content_payload)
-            case_dependencies = self.search_bug_by_block(suite_bug_id).get("bugs")
-            logging.warning(f"cdeps: {case_dependencies}")
-            case_matches = [
-                bug
-                for bug in case_dependencies
-                if case_re.search(bug.get("description") or "")
-            ]
+            case_matches = self.find_bugs_by_test_case_id(
+                str(case_.get("case_id")), suite_bug_id
+            )
             logging.warning(f"matches {case_matches}")
             if not case_matches:
                 logging.warning("not case matches")
