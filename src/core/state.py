@@ -15,7 +15,7 @@ class SessionState:
 
     # Form values
     def get_form_values(self) -> Optional[FormValues]:
-        return self._state.get(SessionKey.FORM_VALUES)
+        return self._state.get(SessionKey.FORM_VALUES, {})
 
     def set_form_values(self, values: FormValues):
         self._state[SessionKey.FORM_VALUES] = values
