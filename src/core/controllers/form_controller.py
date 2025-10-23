@@ -16,7 +16,7 @@ AUTOMATION_STATUSES = [
 ]
 
 
-class TriageFormController(BaseController):
+class FormController(BaseController):
     def __init__(self, state=None):
         super().__init__(state)
         self.triage = Triage().get_instance()
