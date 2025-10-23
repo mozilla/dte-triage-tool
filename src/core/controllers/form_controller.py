@@ -72,7 +72,10 @@ class FormController(BaseController):
         self.state.set_form_values(form_values)
         try:
             test_cases = self.triage.fetch_test_cases(extracted_data)
-            return test_cases, "Success"
+            if test_cases.get('cases') and 'custom_automation_status' in test_cases.get('cases')[0]:
+                return test_cases, "Success"
+            else:
+                raise Exception("Test Query Failed (project test cases may not have automation status set)")
         except Exception as e:
             return {}, str(e)
 

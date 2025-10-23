@@ -135,7 +135,7 @@ function KanbanBoard({ args }: KanbanComponentProps): ReactElement {
                       shouldRespectForcePress={true}
                     >
                       {(provided) => (
-                        <div
+                        <div data-testid={card.id}
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}

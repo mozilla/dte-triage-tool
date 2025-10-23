@@ -33,7 +33,7 @@ class Kanban:
         """
         Display the project and suite name in the header.
         """
-        with st.container(border=True, height="content", gap="small"):
+        with st.container(border=True, height="content", gap="small", key="project-suite-name-container"):
             form_values: FormValues = self.board_controller.state.get_form_values()
             st.markdown(f"**Project**: :blue-background[{form_values['project_name']}]")
             st.markdown(f"**Suite**: :blue-background[{form_values['suite_name']}]")
