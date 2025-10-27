@@ -51,12 +51,26 @@ class TriageFormController(BaseController):
             "limit": st.text_input("Limit", 15),
         }
 
-    def query_and_save(self, form_values: FormValues) -> tuple[dict, str]:
+    def additional_search_params(self, container):
+        """Additional search params to be passed to the testrail query"""
+        search_params = self.state.get_search_params()
+        expander = container.expander("Sections and Rotations")
+        form_values = self.state.get_form_values()
+        form_values |= {
+            "section_id": expander.selectbox("Section", search_params.get('sections'), key="sections-input"),
+            "custom_rotation": expander.selectbox(
+                "Rotations", search_params.get('rotations'), key="rotations-input"
+            )
+        }
+        self.state.set_form_values(form_values)
+        return form_values
+
+    def query_and_save(self, form_values: dict) -> tuple[dict, str]:
         """
         Save the form data to the session state.
         """
         self.clear_on_fetch()
-        required = ("project_id", "suite_id", "priority_id", "automation_status")
+        required = ("project_id", "suite_id")
         if not all(k in form_values and form_values.get(k) for k in required):
             return {}, "Please fill in all required fields."
         extracted_data = {
@@ -68,6 +82,11 @@ class TriageFormController(BaseController):
             ),
             "limit": int(form_values.get("limit")),
         }
+        if self.state.has_search_params():
+            extracted_data |= {
+                "custom_rotation": form_values.get("custom_rotation"),
+                "section_id": form_values.get("section_id")[0],
+            }
         self.update_project_and_suite_names(form_values)
         self.state.set_form_values(form_values)
         self.triage.get_and_set_sections(extracted_data.get("project_id"), extracted_data.get("suite_id"))

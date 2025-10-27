@@ -33,10 +33,17 @@ class Kanban:
         """
         Display the project and suite name in the header.
         """
-        with st.container(border=True, height="content", gap="small"):
-            form_values: FormValues = self.board_controller.state.get_form_values()
-            st.markdown(f"**Project**: :blue-background[{form_values['project_name']}]")
-            st.markdown(f"**Suite**: :blue-background[{form_values['suite_name']}]")
+        container = st.container(border=True, height="content", gap="small")
+        form_values: FormValues = self.board_controller.state.get_form_values()
+        container.markdown(f"**Project**: :blue-background[{form_values['project_name']}]")
+        container.markdown(f"**Suite**: :blue-background[{form_values['suite_name']}]")
+        form_values = self.form_controller.additional_search_params(container)
+        if container.button("Filter Test Cases", key="filter-cases"):
+            test_cases, msg = self.form_controller.query_and_save(form_values)
+            if test_cases:
+                self.board_controller.normalize_and_save_data(test_cases)
+            else:
+                st.warning(msg)
 
     def body(self):
         # Main content area

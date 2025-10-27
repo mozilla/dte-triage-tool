@@ -52,5 +52,5 @@ class KanbanColumn(TypedDict):
 
 class SearchParams(TypedDict):
     """ additional fields for filtering test cases. """
-    sections: list[str]
+    sections: list[tuple[int, str]]
     rotations: list[str]

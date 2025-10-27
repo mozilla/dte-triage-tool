@@ -84,7 +84,7 @@ class SessionState:
     def get_search_params(self):
         return self._state.get(SessionKey.SEARCH_PARAMS)
 
-    def set_search_params(self, key:str, params: list[str]):
+    def set_search_params(self, key:str, params: list[str | tuple[int, str]]):
         if not self.has_search_params():
             self._state[SessionKey.SEARCH_PARAMS] = defaultdict(list)
         self._state[SessionKey.SEARCH_PARAMS][key] = params
