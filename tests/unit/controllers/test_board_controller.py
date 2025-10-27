@@ -3,6 +3,7 @@ from src.core.controllers.board_controller import BoardController
 from src.core.util import Util
 from pandas import DataFrame
 
+
 @pytest.fixture
 def controller(session_state):
     return BoardController(state=session_state)
@@ -26,18 +27,17 @@ class TestBoardController:
         df = controller.format_status_map()
         # check that the headers are set correctly
         assert list(df.columns) == controller.csv_headers
-    
-    def test_format_status_map_returns_proper_dataframe(self, session_state, controller):
+
+    def test_format_status_map_returns_proper_dataframe(
+        self, session_state, controller
+    ):
         # Set up test data
         status_map = {
             1: ("Status Untriaged", "Status Suitable"),
             2: ("Status Suitable", "Status Completed"),
-            3: ("Status Completed", "Status Disabled")
+            3: ("Status Completed", "Status Disabled"),
         }
-        form_values = {
-            "project_id": "P123",
-            "suite_id": "S456"
-        }
+        form_values = {"project_id": "P123", "suite_id": "S456"}
 
         session_state.set_status_map(status_map)
         session_state.set_form_values(form_values)
@@ -50,7 +50,9 @@ class TestBoardController:
         for col in df.iloc:
             cur = col.to_dict()
             assert all(el in controller.csv_headers for el in cur.keys())
-            assert (cur["Original Status"], cur["Current Status"]) == status_map[cur["Test Case ID"]]
+            assert (cur["Original Status"], cur["Current Status"]) == status_map[
+                cur["Test Case ID"]
+            ]
 
     def test_normalize_and_save_data_builds_board_and_saves(
         self, session_state, controller

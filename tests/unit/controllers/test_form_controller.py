@@ -9,15 +9,16 @@ def controller(session_state):
 
 
 class TestFormController:
-
-    @patch('streamlit.text_input')
-    @patch('streamlit.expander')
-    def test_set_inputs_returns_form_structure(self, mock_expander, mock_text_input, controller, mock_tr_session):
+    @patch("streamlit.text_input")
+    @patch("streamlit.expander")
+    def test_set_inputs_returns_form_structure(
+        self, mock_expander, mock_text_input, controller, mock_tr_session
+    ):
         """Test that set_inputs returns the correct form structure"""
         mock_priorities = [
             {"id": 1, "name": "High"},
             {"id": 2, "name": "Medium"},
-            {"id": 3, "name": "Low"}
+            {"id": 3, "name": "Low"},
         ]
         controller.state.set_priorities(mock_priorities)
 
@@ -28,8 +29,15 @@ class TestFormController:
         mock_expander_instance.multiselect.return_value = []
 
         result = controller.set_inputs()
-        input_keys = ["project_id", "suite_id", "priority_id", "automation_status", "limit", "project_name",
-                      "suite_name"]
+        input_keys = [
+            "project_id",
+            "suite_id",
+            "priority_id",
+            "automation_status",
+            "limit",
+            "project_name",
+            "suite_name",
+        ]
         for key in input_keys:
             assert key in result
 
@@ -64,7 +72,7 @@ class TestFormController:
             "suite_id": "2054",
             "priority_id": [(1, "High"), (2, "Medium")],
             "automation_status": [(1, "Untriaged"), (2, "Suitable")],
-            "limit": "15"
+            "limit": "15",
         }
 
         # Mock the necessary methods
@@ -84,10 +92,12 @@ class TestFormController:
             "suite_id": "2054",
             "priority_id": [(1, "High")],
             "automation_status": [(1, "Untriaged")],
-            "limit": "15"
+            "limit": "15",
         }
 
-        controller.triage.fetch_test_cases = MagicMock(side_effect=Exception("Connection error"))
+        controller.triage.fetch_test_cases = MagicMock(
+            side_effect=Exception("Connection error")
+        )
         controller.update_project_and_suite_names = MagicMock()
 
         result, message = controller.query_and_save(form_values)
@@ -97,15 +107,14 @@ class TestFormController:
 
     def test_update_project_and_suite_names(self, controller, session_state):
         """Test that project and suite names are properly updated"""
-        form_input = {
-            "project_id": "17",
-            "suite_id": "2054"
-        }
+        form_input = {"project_id": "17", "suite_id": "2054"}
 
         mock_project = {"id": 17, "name": "Test Project"}
         mock_suite = {"id": 2054, "name": "Test Suite"}
 
-        controller.query_testrail_entry = MagicMock(side_effect=[mock_project, mock_suite])
+        controller.query_testrail_entry = MagicMock(
+            side_effect=[mock_project, mock_suite]
+        )
         controller.update_project_and_suite_names(form_input)
 
         assert form_input["project_name"] == "Test Project"
@@ -132,15 +141,17 @@ class TestFormController:
         assert controller.query_testrail_entry(123, "case") == mock_case
         controller.triage.tr_session.get_case.assert_called_once_with(123)
 
-    @patch('src.core.triage.Triage.update_case_automation_statuses')
-    def test_commit_changes_to_testrail(self, update_case_automation_mock, controller, session_state):
+    @patch("src.core.triage.Triage.update_case_automation_statuses")
+    def test_commit_changes_to_testrail(
+        self, update_case_automation_mock, controller, session_state
+    ):
         """Test committing changes to TestRail"""
 
         status_map = {
             1: ("status untriaged", "status suitable"),
             2: ("status suitable", "status completed"),
             3: ("status untriaged", "status completed"),
-            4: ("status completed", "status disabled")
+            4: ("status completed", "status disabled"),
         }
         grouped_tc = {2: [1], 4: [2, 3], 5: [4]}
         session_state.set_status_map(status_map)

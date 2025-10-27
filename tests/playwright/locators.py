@@ -21,16 +21,29 @@ class Locators:
             ".st-key-automation-status-input svg[title='open']"
         )
 
-        self.project_suite_name_container = self.page.locator(".st-key-project-suite-name-container")
-        self.alert_container = self.page.locator(".stSidebar div[data-testid='stAlertContainer']")
+        self.project_suite_name_container = self.page.locator(
+            ".st-key-project-suite-name-container"
+        )
+        self.alert_container = self.page.locator(
+            ".stSidebar div[data-testid='stAlertContainer']"
+        )
         self.fetch_button = self.page.locator(".st-key-fetch-button button")
         self.commit_button = self.page.locator(".st-key-commit-button button")
 
         # Droppable area
-        self.kanban_board_frame = self.page.frame_locator('.stCustomComponentV1')
-        self.status_untriaged = self.kanban_board_frame.locator("div[data-rbd-droppable-id='status untriaged']")
-        self.status_suitable = self.kanban_board_frame.locator("div[data-rbd-droppable-id='status suitable']")
-        self.status_unsuitable = self.kanban_board_frame.locator("div[data-rbd-droppable-id='status unsuitable']")
-        self.status_completed = self.kanban_board_frame.locator("div[data-rbd-droppable-id='status completed']")
-        self.status_disabled = self.kanban_board_frame.locator("div[data-rbd-droppable-id='status disabled']")
-
+        self.kanban_board_frame = self.page.frame_locator(".stCustomComponentV1")
+        self.status_untriaged = self.kanban_board_frame.locator(
+            "div[data-rbd-droppable-id='status untriaged']"
+        )
+        self.status_suitable = self.kanban_board_frame.locator(
+            "div[data-rbd-droppable-id='status suitable']"
+        )
+        self.status_unsuitable = self.kanban_board_frame.locator(
+            "div[data-rbd-droppable-id='status unsuitable']"
+        )
+        self.status_completed = self.kanban_board_frame.locator(
+            "div[data-rbd-droppable-id='status completed']"
+        )
+        self.status_disabled = self.kanban_board_frame.locator(
+            "div[data-rbd-droppable-id='status disabled']"
+        )
