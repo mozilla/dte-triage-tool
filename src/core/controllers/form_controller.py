@@ -72,14 +72,15 @@ class FormController(BaseController):
         self.state.set_form_values(form_values)
         try:
             test_cases = self.triage.fetch_test_cases(extracted_data)
+            invalid_cases = [case["id"] for case in test_cases.get("cases") if "custom_automation_status" not in case]
             if (
                 test_cases.get("cases")
-                and "custom_automation_status" in test_cases.get("cases")[0]
+                and not invalid_cases
             ):
                 return test_cases, "Success"
             else:
                 raise Exception(
-                    "Test Query Failed (project test cases may not have automation status set)"
+                    f"Test Query Failed ({len(invalid_cases)} missing the field 'custom_automation_status')."
                 )
         except Exception as e:
             return {}, str(e)

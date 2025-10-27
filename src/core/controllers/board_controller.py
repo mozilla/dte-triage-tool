@@ -47,7 +47,7 @@ class BoardController(BaseController):
         }
         for test_case in test_cases:
             case_automation_status = self.status_translation.get(
-                test_case.get("custom_automation_status")
+                test_case.get("custom_automation_status"), "Status Untriaged"
             )
             cols[case_automation_status]["cards"].append(
                 {
