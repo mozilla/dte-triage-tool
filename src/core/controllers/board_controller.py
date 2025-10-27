@@ -63,6 +63,10 @@ class BoardController(BaseController):
                 }
             )
         initial_board = list(cols.values())
-        self.state.set_search_params("rotations", list(rotations))
+        if not (
+            self.state.has_search_params()
+            and "rotations" in self.state.get_search_params()
+        ):
+            self.state.set_search_params("rotations", list(rotations))
         self.state.set_initial_board(initial_board)
         return initial_board
