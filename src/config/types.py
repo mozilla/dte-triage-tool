@@ -21,6 +21,7 @@ class SessionKey(str, Enum):
     INITIAL_BOARD = "initial_board"
     AVAILABLE_PRIORITIES = "available_priorities"
     STATUS_MAP = "test_case_status_map"
+    SEARCH_PARAMS = "search_params"
 
 
 class Priority(TypedDict):
@@ -48,3 +49,8 @@ class KanbanColumn(TypedDict):
     id: str
     title: str
     cards: list[TestCase]
+
+class SearchParams(TypedDict):
+    """ additional fields for filtering test cases. """
+    sections: list[str]
+    rotations: list[str]

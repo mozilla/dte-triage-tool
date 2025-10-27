@@ -57,6 +57,13 @@ class Triage:
         self.state.set_priorities(available_priorities)
         return available_priorities
 
+    def get_and_set_sections(self, project_id: str, suite_id: str):
+        """ Query and save the sections of the given project and suite. """
+        sections = self.tr_session.get_sections(project_id, suite_id).get("sections", [])
+        if sections:
+            self.state.set_search_params("sections", Util.extract_section_name_and_ids(sections))
+        return sections
+
     def update_case_automation_statuses(self, formated_data: dict[int, list[int]]):
         """update the automation status of the test cases."""
         suite_id = self.state.get_form_values().get("suite_id")
