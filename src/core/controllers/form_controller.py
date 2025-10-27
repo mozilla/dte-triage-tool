@@ -57,10 +57,12 @@ class TriageFormController(BaseController):
         expander = container.expander("Sections and Rotations")
         form_values = self.state.get_form_values()
         form_values |= {
-            "section_id": expander.selectbox("Section", search_params.get('sections'), key="sections-input"),
+            "section_id": expander.selectbox(
+                "Section", search_params.get("sections"), key="sections-input"
+            ),
             "custom_rotation": expander.selectbox(
-                "Rotations", search_params.get('rotations'), key="rotations-input"
-            )
+                "Rotations", search_params.get("rotations"), key="rotations-input"
+            ),
         }
         self.state.set_form_values(form_values)
         return form_values
@@ -89,7 +91,9 @@ class TriageFormController(BaseController):
             }
         self.update_project_and_suite_names(form_values)
         self.state.set_form_values(form_values)
-        self.triage.get_and_set_sections(extracted_data.get("project_id"), extracted_data.get("suite_id"))
+        self.triage.get_and_set_sections(
+            extracted_data.get("project_id"), extracted_data.get("suite_id")
+        )
         try:
             test_cases = self.triage.fetch_test_cases(extracted_data)
             return test_cases, "Success"

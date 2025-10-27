@@ -29,8 +29,8 @@ class Util:
 
     @staticmethod
     def extract_section_name_and_ids(sections: list[dict]) -> list[tuple[int, str]]:
-        """ Given the section information for a given project and suite, extract the section name and ids."""
-        return [(section.get('id'), section.get('name')) for section in sections]
+        """Given the section information for a given project and suite, extract the section name and ids."""
+        return [(section.get("id"), section.get("name")) for section in sections]
 
     @staticmethod
     def extract_case_ids_from_board(status_code: int, board: list[KanbanColumn]):

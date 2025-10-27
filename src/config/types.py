@@ -50,7 +50,9 @@ class KanbanColumn(TypedDict):
     title: str
     cards: list[TestCase]
 
+
 class SearchParams(TypedDict):
-    """ additional fields for filtering test cases. """
+    """additional fields for filtering test cases."""
+
     sections: list[tuple[int, str]]
     rotations: list[str]

@@ -35,7 +35,9 @@ class Kanban:
         """
         container = st.container(border=True, height="content", gap="small")
         form_values: FormValues = self.board_controller.state.get_form_values()
-        container.markdown(f"**Project**: :blue-background[{form_values['project_name']}]")
+        container.markdown(
+            f"**Project**: :blue-background[{form_values['project_name']}]"
+        )
         container.markdown(f"**Suite**: :blue-background[{form_values['suite_name']}]")
         form_values = self.form_controller.additional_search_params(container)
         if container.button("Filter Test Cases", key="filter-cases"):
