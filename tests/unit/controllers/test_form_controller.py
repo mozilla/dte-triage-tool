@@ -1,5 +1,5 @@
 import pytest
-from src.core.controllers.form_controller import FormController, AUTOMATION_STATUSES
+from src.core.controllers.form_controller import FormController
 from unittest.mock import MagicMock, patch
 
 
@@ -12,7 +12,7 @@ class TestFormController:
     @patch("streamlit.text_input")
     @patch("streamlit.expander")
     def test_set_inputs_returns_form_structure(
-        self, mock_expander, mock_text_input, controller, mock_tr_session
+        self, mock_expander, mock_text_input, controller
     ):
         """Test that set_inputs returns the correct form structure"""
         mock_priorities = [
@@ -65,7 +65,7 @@ class TestFormController:
         assert result == {}
         assert message == "Please fill in all required fields."
 
-    def test_query_and_save_success(self, controller, session_state, mock_tr_session):
+    def test_query_and_save_success(self, controller):
         """Test successful query_and_save with all required fields"""
         form_values = {
             "project_id": "17",
@@ -76,7 +76,9 @@ class TestFormController:
         }
 
         # Mock the necessary methods
-        mock_test_cases = {"cases": [{"id": 1, "title": "Test Case"}]}
+        mock_test_cases = {
+            "cases": [{"id": 1, "title": "Test Case", "custom_automation_status": 2}]
+        }
         controller.triage.fetch_test_cases = MagicMock(return_value=mock_test_cases)
         controller.update_project_and_suite_names = MagicMock()
 
@@ -85,7 +87,7 @@ class TestFormController:
         assert result == mock_test_cases
         assert controller.update_project_and_suite_names.called
 
-    def test_query_and_save_handles_exceptions(self, controller, session_state):
+    def test_query_and_save_handles_exceptions(self, controller):
         """Test that query_and_save properly handles exceptions"""
         form_values = {
             "project_id": "17",
@@ -105,7 +107,7 @@ class TestFormController:
         assert result == {}
         assert message == "Connection error"
 
-    def test_update_project_and_suite_names(self, controller, session_state):
+    def test_update_project_and_suite_names(self, controller):
         """Test that project and suite names are properly updated"""
         form_input = {"project_id": "17", "suite_id": "2054"}
 
@@ -120,8 +122,8 @@ class TestFormController:
         assert form_input["project_name"] == "Test Project"
         assert form_input["suite_name"] == "Test Suite"
 
-        assert session_state.get_form_values()["project_name"] == "Test Project"
-        assert session_state.get_form_values()["suite_name"] == "Test Suite"
+        assert controller.state.get_form_values()["project_name"] == "Test Project"
+        assert controller.state.get_form_values()["suite_name"] == "Test Suite"
 
     def test_query_testrail_entry(self, controller):
         """Test querying a project from TestRail"""
@@ -142,9 +144,7 @@ class TestFormController:
         controller.triage.tr_session.get_case.assert_called_once_with(123)
 
     @patch("src.core.triage.Triage.update_case_automation_statuses")
-    def test_commit_changes_to_testrail(
-        self, update_case_automation_mock, controller, session_state
-    ):
+    def test_commit_changes_to_testrail(self, update_case_automation_mock, controller):
         """Test committing changes to TestRail"""
 
         status_map = {
@@ -154,7 +154,7 @@ class TestFormController:
             4: ("status completed", "status disabled"),
         }
         grouped_tc = {2: [1], 4: [2, 3], 5: [4]}
-        session_state.set_status_map(status_map)
+        controller.state.set_status_map(status_map)
 
         controller.commit_changes_to_testrail()
 
@@ -162,14 +162,16 @@ class TestFormController:
         update_case_automation_mock.assert_called_once()
         update_case_automation_mock.assert_called_with(grouped_tc)
 
-    def test_clear_on_fetch(self, controller, session_state):
+    def test_clear_on_fetch(self, controller):
         """Test that clear_on_fetch clears all relevant state"""
-        session_state.set_initial_board([{"title": "Board"}])
-        session_state.set_status_map({1: ("Old", "Status")})
-        session_state.set_form_values({"old": "data"})
+        controller.state.set_initial_board([{"title": "Board"}])
+        controller.state.set_status_map({1: ("Status Untriaged", "Status Suitable")})
+        controller.state.set_form_values(
+            {"suite_id": 12, "priority_id": 2, "automation_status": 3}
+        )
 
         controller.clear_on_fetch()
 
-        assert session_state.get_initial_board() == []
-        assert session_state.get_status_map() == {}
-        assert session_state.get_form_values() == {}
+        assert not controller.state.get_initial_board()
+        assert not controller.state.get_status_map()
+        assert not controller.state.get_form_values()
