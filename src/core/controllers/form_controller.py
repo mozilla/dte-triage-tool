@@ -58,10 +58,10 @@ class TriageFormController(BaseController):
         form_values = self.state.get_form_values()
         form_values |= {
             "section_id": expander.selectbox(
-                "Section", search_params.get("sections"), key="sections-input"
+                "Section", search_params.get("sections"), key="sections-input", index=None
             ),
             "custom_rotation": expander.selectbox(
-                "Rotations", search_params.get("rotations"), key="rotations-input"
+                "Rotations", search_params.get("rotations"), key="rotations-input", index=None
             ),
         }
         self.state.set_form_values(form_values)
