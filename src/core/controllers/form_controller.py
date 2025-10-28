@@ -16,7 +16,7 @@ AUTOMATION_STATUSES = [
 ]
 
 
-class TriageFormController(BaseController):
+class FormController(BaseController):
     def __init__(self, state=None):
         super().__init__(state)
         self.triage = Triage().get_instance()
@@ -72,7 +72,17 @@ class TriageFormController(BaseController):
         self.state.set_form_values(form_values)
         try:
             test_cases = self.triage.fetch_test_cases(extracted_data)
-            return test_cases, "Success"
+            invalid_cases = [
+                case["id"]
+                for case in test_cases.get("cases")
+                if "custom_automation_status" not in case
+            ]
+            if test_cases.get("cases") and not invalid_cases:
+                return test_cases, "Success"
+            else:
+                raise Exception(
+                    f"Test Query Failed ({len(invalid_cases)} missing the field 'custom_automation_status')."
+                )
         except Exception as e:
             return {}, str(e)
 

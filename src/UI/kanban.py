@@ -4,14 +4,14 @@ from datetime import datetime, timezone
 
 from src.UI import kanban
 from src.core.controllers.board_controller import BoardController
-from src.core.controllers.form_controller import TriageFormController
+from src.core.controllers.form_controller import FormController
 from src.config.types import FormValues
 
 
 class Kanban:
     def __init__(self):
         st.set_page_config(layout="wide")
-        self.form_controller = TriageFormController()
+        self.form_controller = FormController()
         self.board_controller = BoardController()
 
     @staticmethod
@@ -33,7 +33,12 @@ class Kanban:
         """
         Display the project and suite name in the header.
         """
-        with st.container(border=True, height="content", gap="small"):
+        with st.container(
+            border=True,
+            height="content",
+            gap="small",
+            key="project-suite-name-container",
+        ):
             form_values: FormValues = self.board_controller.state.get_form_values()
             st.markdown(f"**Project**: :blue-background[{form_values['project_name']}]")
             st.markdown(f"**Suite**: :blue-background[{form_values['suite_name']}]")
