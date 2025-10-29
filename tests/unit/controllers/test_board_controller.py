@@ -1,6 +1,7 @@
 import pytest
 from src.core.controllers.board_controller import BoardController
 from src.core.util import Util
+from pandas import DataFrame
 
 
 @pytest.fixture
@@ -10,7 +11,6 @@ def controller(session_state):
 
 class TestBoardController:
     def test_update_status_map_clears_then_sets(self, session_state, controller):
-        session_state.set_status_map({99: ("A", "B")})
         controller.update_status_map({1: ("Status Untriaged", "Status Suitable")})
 
         assert session_state.get_status_map() == {
@@ -24,10 +24,35 @@ class TestBoardController:
                 20: ("Status Suitable", "Status Completed"),
             }
         )
-        session_state.set_form_values({})
         df = controller.format_status_map()
         # check that the headers are set correctly
         assert list(df.columns) == controller.csv_headers
+
+    def test_format_status_map_returns_proper_dataframe(
+        self, session_state, controller
+    ):
+        # Set up test data
+        status_map = {
+            1: ("Status Untriaged", "Status Suitable"),
+            2: ("Status Suitable", "Status Completed"),
+            3: ("Status Completed", "Status Disabled"),
+        }
+        form_values = {"project_id": "P123", "suite_id": "S456"}
+
+        session_state.set_status_map(status_map)
+        session_state.set_form_values(form_values)
+
+        # Get dataframe
+        df: DataFrame = controller.format_status_map()
+
+        assert len(df) == 3
+        # check that the headers are set correctly and values are correct
+        for col in df.iloc:
+            cur = col.to_dict()
+            assert all(el in controller.csv_headers for el in cur.keys())
+            assert (cur["Original Status"], cur["Current Status"]) == status_map[
+                cur["Test Case ID"]
+            ]
 
     def test_normalize_and_save_data_builds_board_and_saves(
         self, session_state, controller

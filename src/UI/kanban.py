@@ -4,14 +4,14 @@ from datetime import datetime, timezone
 
 from src.UI import kanban
 from src.core.controllers.board_controller import BoardController
-from src.core.controllers.form_controller import TriageFormController
+from src.core.controllers.form_controller import FormController
 from src.config.types import FormValues
 
 
 class Kanban:
     def __init__(self):
         st.set_page_config(layout="wide")
-        self.form_controller = TriageFormController()
+        self.form_controller = FormController()
         self.board_controller = BoardController()
 
     @staticmethod
