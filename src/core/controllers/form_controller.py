@@ -98,11 +98,11 @@ class FormController(BaseController):
             }
         self.update_project_and_suite_names(form_values)
         self.state.set_form_values(form_values)
-        if not self.state.has_search_params():
-            self.triage.get_and_set_sections(
-                extracted_data.get("project_id"), extracted_data.get("suite_id")
-            )
         try:
+            if not self.state.has_search_params():
+                self.triage.get_and_set_sections(
+                    extracted_data.get("project_id"), extracted_data.get("suite_id")
+                )
             test_cases = self.triage.fetch_test_cases(extracted_data)
             invalid_cases = [
                 case["id"]
