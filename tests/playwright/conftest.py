@@ -14,7 +14,7 @@ SUITE_ID = "37522"
 @pytest.fixture(scope="class")
 def browser(playwright: Playwright):
     firefox = playwright.firefox
-    browser_instance = firefox.launch(headless=False)
+    browser_instance = firefox.launch()
     yield browser_instance
     browser_instance.close()
 
