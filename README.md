@@ -23,6 +23,12 @@ upstream, where anyone can see them. The following values need to be set:
 To obtain usernames and API keys for DTE service accounts, please talk to Ben C
 to be added to the vault or receive a secure link.
 
+
+## Versioning and Releases
+The project uses [semantic versioning](https://semver.org/). The current version can be found in the `pyproject` file. 
+We use `bump-my-version` to bump the version. To bump the version, run the following command:
+
+`uv run bump-my-version bump [major|minor|patch]`
 ## Setup
 
 If you just want to start the application the fastest way possible, simply run

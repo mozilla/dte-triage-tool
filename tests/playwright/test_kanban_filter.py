@@ -28,5 +28,16 @@ def test_project_search_and_filter(
     expect(locators.project_suite_name_container).to_be_visible()
     project_container = locators.project_suite_name_container.get_by_text("Project:")
     suite_container = locators.project_suite_name_container.get_by_text("Suite:")
+    # click expander
+    expander = locators.project_suite_name_container.get_by_test_id("stExpander")
+    expander.click()
+    # get section filter and rotation filter
+    section_filter = locators.section_id_input
+    rotation_filter = locators.custom_rotation_input
     expect(project_container).to_contain_text(search_data["project_name"])
     expect(suite_container).to_contain_text(search_data["suite_name"])
+    expect(section_filter).to_be_visible()
+    section_filter.click()
+    expect(locators.dropdown_element).to_be_visible()
+    page.keyboard.press("Escape")
+    expect(rotation_filter).to_be_visible()

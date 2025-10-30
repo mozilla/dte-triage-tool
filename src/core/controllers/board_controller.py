@@ -45,7 +45,10 @@ class BoardController(BaseController):
             status: {"id": status.lower(), "title": status, "cards": []}
             for status in self.status_translation.values()
         }
+        rotations = set()
         for test_case in test_cases:
+            if test_case.get("custom_rotation"):
+                rotations.add(test_case.get("custom_rotation"))
             case_automation_status = self.status_translation.get(
                 test_case.get("custom_automation_status"), "Status Untriaged"
             )
@@ -60,5 +63,10 @@ class BoardController(BaseController):
                 }
             )
         initial_board = list(cols.values())
+        if not (
+            self.state.has_search_params()
+            and "rotations" in self.state.get_search_params()
+        ):
+            self.state.set_search_params("rotations", list(rotations))
         self.state.set_initial_board(initial_board)
         return initial_board

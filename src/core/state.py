@@ -1,3 +1,4 @@
+from collections import defaultdict
 from typing import Optional
 
 from src.config.types import FormValues, SessionKey, Priority, KanbanColumn
@@ -78,3 +79,19 @@ class SessionState:
         keys = list(self._state.keys())
         for key in keys:
             self._state.pop(key)
+
+    # Search params
+    def get_search_params(self):
+        return self._state.get(SessionKey.SEARCH_PARAMS)
+
+    def set_search_params(self, key: str, params: list[str | tuple[int, str]]):
+        if not self.has_search_params():
+            self._state[SessionKey.SEARCH_PARAMS] = defaultdict(list)
+        self._state[SessionKey.SEARCH_PARAMS][key] = params
+
+    def has_search_params(self):
+        return bool(self.get_search_params())
+
+    def clear_search_params(self):
+        if self.has_search_params():
+            del self._state[SessionKey.SEARCH_PARAMS]

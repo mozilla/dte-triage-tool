@@ -28,6 +28,11 @@ class Util:
         return ",".join([str(id) for id, _ in data])
 
     @staticmethod
+    def extract_section_name_and_ids(sections: list[dict]) -> list[tuple[int, str]]:
+        """Given the section information for a given project and suite, extract the section name and ids."""
+        return [(section.get("id"), section.get("name")) for section in sections]
+
+    @staticmethod
     def extract_case_ids_from_board(status_code: int, board: list[KanbanColumn]):
         """
         Given a status code and a board list, extract the case ids for the given status code.

@@ -58,6 +58,10 @@ class TestRail:
         """Get available case fields."""
         return self.client.send_get("get_case_fields")
 
+    def get_sections(self, project_id, suite_id):
+        """Get sections of the given project and suite id."""
+        return self.client.send_get(f"get_sections/{project_id}&suite_id={suite_id}")
+
     def update_test_cases(self, payload, suite_id):
         """update the test cases of the given suite id with the given payload."""
         return self.client.send_post(f"update_cases/{suite_id}", payload)

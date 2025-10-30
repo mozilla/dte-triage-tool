@@ -1,6 +1,6 @@
 [project]
 name = "dte-triage-tool"
-version = "0.1.0"
+version = "0.2.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
@@ -12,7 +12,20 @@ dependencies = [
     "pytest-playwright>=0.7.0",
     "python-dotenv>=1.1.1",
     "pyyaml>=6.0.2",
-    "ruff>=0.12.10",
     "streamlit>=1.48.1",
     "watchdog>=6.0.0",
+]
+[tool.bumpversion]
+current_version = "0.2.0"
+commit = true
+tag = true
+
+[tool.bumpversion.file."pyproject.toml"]
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
+
+[dependency-groups]
+dev = [
+    "bump-my-version>=1.2.4",
+    "ruff>=0.12.10"
 ]
