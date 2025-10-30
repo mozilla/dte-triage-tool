@@ -41,6 +41,3 @@ def test_project_search_and_filter(
     expect(locators.dropdown_element).to_be_visible()
     page.keyboard.press("Escape")
     expect(rotation_filter).to_be_visible()
-
-
-
