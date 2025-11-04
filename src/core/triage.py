@@ -68,17 +68,19 @@ class Triage:
             }
             self.tr_session.update_test_cases(payload, suite_id)
             if status_code == 2:
-                initial_board = self.state.get_initial_board()
-                initial_suitable_case_ids = list(
+                initial_suitable_case_ids = Util.extract_case_ids_from_board(
+                    2, self.state.get_initial_board()
+                )
+                valid_suitable_case_ids = list(
                     filter(
-                        lambda case_id: case_id not in test_cases,
-                        Util.extract_case_ids_from_board(2, initial_board),
+                        lambda case_id: case_id not in initial_suitable_case_ids,
+                        test_cases,
                     )
                 )
                 if not self.bz_session.find_bugs_by_test_case_ids(
-                    initial_suitable_case_ids
+                    valid_suitable_case_ids
                 ):
-                    payload["case_ids"].extend(initial_suitable_case_ids)
+                    payload["case_ids"] = valid_suitable_case_ids
                 bz_content_payload |= self.tr_session.get_bugzilla_content(
                     payload, suite_id
                 )
