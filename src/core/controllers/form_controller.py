@@ -91,15 +91,15 @@ class FormController(BaseController):
             "limit": int(form_values.get("limit")),
         }
         additional_required = ("custom_rotation", "section_id")
-        if all(k in form_values and form_values.get(k) for k in additional_required):
+        if any(k in form_values and form_values.get(k) for k in additional_required):
             extracted_data |= {
                 "custom_rotation": form_values.get("custom_rotation"),
-                "section_id": form_values.get("section_id")[0],
+                "section_id": next(iter(form_values.get("section_id", ())), None),
             }
-        self.update_project_and_suite_names(form_values)
         self.state.set_form_values(form_values)
         try:
             if not self.state.has_search_params():
+                self.update_project_and_suite_names(form_values)
                 self.triage.get_and_set_sections(
                     extracted_data.get("project_id"), extracted_data.get("suite_id")
                 )
@@ -156,6 +156,7 @@ class FormController(BaseController):
 
     def clear_on_fetch(self):
         """Clear the form values and initial board data."""
+        self.state.clear_search_params()
         self.state.clear_initial_board()
         self.state.clear_status_map()
         self.state.clear_form_values()

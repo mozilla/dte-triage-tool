@@ -46,7 +46,10 @@ class BoardController(BaseController):
             for status in self.status_translation.values()
         }
         rotations = set()
+        rotation_filter = self.state.get_form_values().get("custom_rotation")
         for test_case in test_cases:
+            if rotation_filter and test_case.get("custom_rotation") != rotation_filter:
+                continue
             if test_case.get("custom_rotation"):
                 rotations.add(test_case.get("custom_rotation"))
             case_automation_status = self.status_translation.get(
