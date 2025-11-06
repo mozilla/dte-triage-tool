@@ -42,7 +42,7 @@ class TestRail:
         :return: List of test cases matching the filters.
         """
         project_id = query_params.pop("project_id")
-        query_string = "&".join(f"{key}={val}" for key, val in query_params.items())
+        query_string = "&".join(f"{key}={val}" for key, val in query_params.items() if val)
         endpoint = (
             f"get_cases/{project_id}&{query_string}"
             if query_params
