@@ -44,17 +44,17 @@ def save_session_to_cookies(cookies):
 
 
 def run_app():
-    cookies = CookieManager(
-        prefix=COOKIE_PREFIX
-    )
-    if not cookies.ready():
-        st.stop()
-    load_session_from_cookies(cookies)
+    # cookies = CookieManager(
+    #     prefix=COOKIE_PREFIX
+    # )
+    # if not cookies.ready():
+    #     st.stop()
+    # load_session_from_cookies(cookies)
 
     kanban = Kanban()
     kanban.run()
 
-    save_session_to_cookies(cookies)
+    # save_session_to_cookies(cookies)
 
 
 if __name__ == "__main__":
