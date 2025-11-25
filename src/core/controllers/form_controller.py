@@ -94,7 +94,9 @@ class FormController(BaseController):
         if any(k in form_values and form_values.get(k) for k in additional_required):
             extracted_data |= {
                 "custom_rotation": form_values.get("custom_rotation"),
-                "section_id": form_values.get("section_id")[0] if form_values.get("section_id") else None,
+                "section_id": form_values.get("section_id")[0]
+                if form_values.get("section_id")
+                else None,
             }
         self.state.set_form_values(form_values)
         try:
