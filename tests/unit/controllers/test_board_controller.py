@@ -63,6 +63,7 @@ class TestBoardController:
         - Append cards per case with translated priority label and color
         - Save to session state's initial board
         """
+        session_state.set_form_values({"automation_status": []})
         raw = {
             "cases": [
                 {
@@ -106,6 +107,7 @@ class TestBoardController:
     def test_normalize_and_save_data_handles_empty_cases(
         self, session_state, controller
     ):
+        session_state.set_form_values({"automation_status": []})
         board = controller.normalize_and_save_data({"cases": []})
         assert isinstance(board, list)
         assert all("cards" in col for col in board)
