@@ -15,5 +15,6 @@ def run_app():
     # Persist state to local storage
     session.sync_all_to_storage()
 
+
 if __name__ == "__main__":
     run_app()

@@ -17,9 +17,11 @@ class SessionState:
 
     # Local Storage Helpers
 
-    def _persist(self, key: str, value: any):
+    def _persist(self, item_key, value: any):
         """Helper to save to local storage"""
-        self.local_storage.setItem(key, value)
+        if self.local_storage.getItem(item_key):
+            self.local_storage.deleteAll(item_key)
+        self.local_storage.setItem(item_key, value, key=item_key.value)
 
     def _load_from_storage(self, key: str):
         """Helper to load from local storage if session state is missing it"""
@@ -34,7 +36,7 @@ class SessionState:
             self._load_from_storage(key)
 
     def sync_all_to_storage(self):
-        """ Call this once on app exit to persist session state """
+        """Call this once on app exit to persist session state"""
         for key in SessionKey:
             self._persist(key, self._state.get(key))
 
