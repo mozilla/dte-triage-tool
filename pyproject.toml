@@ -14,7 +14,7 @@ dependencies = [
     "pyyaml>=6.0.2",
     "streamlit>=1.48.1",
     "watchdog>=6.0.0",
-    "streamlit-cookies-manager"
+    "streamlit-local-storage"
 ]
 [tool.bumpversion]
 current_version = "0.2.0"

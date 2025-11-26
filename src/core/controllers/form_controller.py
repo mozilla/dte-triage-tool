@@ -158,7 +158,4 @@ class FormController(BaseController):
 
     def clear_on_fetch(self):
         """Clear the form values and initial board data."""
-        self.state.clear_search_params()
-        self.state.clear_initial_board()
-        self.state.clear_status_map()
-        self.state.clear_form_values()
+        self.state.clear_state_values()

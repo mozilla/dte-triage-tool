@@ -1,97 +1,133 @@
 from collections import defaultdict
-from typing import Optional
+from typing import Optional, Any
 
-from src.config.types import FormValues, SessionKey, Priority, KanbanColumn
 import streamlit as st
+from streamlit_local_storage import LocalStorage
+from src.config.types import FormValues, SessionKey, Priority, KanbanColumn
 
 
 class SessionState:
     """
-    Thin wrapper to control session state.
+    Thin wrapper for typed session state access.
     """
 
     def __init__(self, state=None):
-        """Initialize the state but can also pass in a pre-existing state for testing"""
-        self._state = state if state else st.session_state
+        self._state = state if state is not None else st.session_state
+        self.local_storage = LocalStorage()
 
-    # Form values
+    # Local Storage Helpers
+
+    def _persist(self, key: str, value: any):
+        """Helper to save to local storage"""
+        self.local_storage.setItem(key, value)
+
+    def _load_from_storage(self, key: str):
+        """Helper to load from local storage if session state is missing it"""
+        if key not in self._state:
+            stored_value = self.local_storage.getItem(key)
+            if stored_value:
+                self._state[key] = stored_value
+
+    def sync_all_from_storage(self):
+        """Call this once on app startup to re-hydrate session state"""
+        for key in SessionKey:
+            self._load_from_storage(key)
+
+    def sync_all_to_storage(self):
+        """ Call this once on app exit to persist session state """
+        for key in SessionKey:
+            self._persist(key, self._state.get(key))
+
+    # Generic helpers
+
+    def _get(self, key: SessionKey, default=None) -> Any:
+        return self._state.get(key, default)
+
+    def _set(self, key: SessionKey, value: Any):
+        self._state[key] = value
+
+    def _clear(self, key: SessionKey):
+        self._state.pop(key, None)
+
+    def _has(self, key: SessionKey) -> bool:
+        return key in self._state and self._state[key] not in (None, {}, [], "")
+
+    def clear_state_values(self):
+        """Clear all session state values except priorities"""
+        for key in SessionKey:
+            if key != SessionKey.AVAILABLE_PRIORITIES:
+                self._clear(key)
+
+    # Form Values
+
     def get_form_values(self) -> Optional[FormValues]:
-        return self._state.get(SessionKey.FORM_VALUES, {})
+        return self._get(SessionKey.FORM_VALUES, {})
 
     def set_form_values(self, values: FormValues):
-        self._state[SessionKey.FORM_VALUES] = values
+        self._set(SessionKey.FORM_VALUES, values)
 
-    def has_form_values(self):
+    def has_form_values(self) -> bool:
         fv = self.get_form_values()
-        if not fv:
-            return False
         required = ("suite_id", "priority_id", "automation_status")
-        return all(k in fv and fv.get(k) for k in required)
+        return all(fv.get(k) for k in required)
 
     def clear_form_values(self):
-        if self.has_form_values():
-            del self._state[SessionKey.FORM_VALUES]
+        self._clear(SessionKey.FORM_VALUES)
 
     # Priorities
-    def get_priorities(self) -> list[Priority] | None:
-        return self._state.get(SessionKey.AVAILABLE_PRIORITIES)
+
+    def get_priorities(self) -> Optional[list[Priority]]:
+        return self._get(SessionKey.AVAILABLE_PRIORITIES)
 
     def set_priorities(self, priorities: list[Priority]):
-        self._state[SessionKey.AVAILABLE_PRIORITIES] = priorities
+        self._set(SessionKey.AVAILABLE_PRIORITIES, priorities)
 
-    def has_priorities(self):
-        return self.get_priorities() is not None
+    def has_priorities(self) -> bool:
+        return self._has(SessionKey.AVAILABLE_PRIORITIES)
 
     def clear_priorities(self):
-        if self.has_priorities():
-            del self._state[SessionKey.AVAILABLE_PRIORITIES]
+        self._clear(SessionKey.AVAILABLE_PRIORITIES)
 
-    # Initial Board data (Test cases)
-    def get_initial_board(self) -> list[KanbanColumn] | None:
-        return self._state.get(SessionKey.INITIAL_BOARD)
+    # Initial Kanban Board
 
-    def set_initial_board(self, test_cases: list[KanbanColumn]):
-        self._state[SessionKey.INITIAL_BOARD] = test_cases
+    def get_initial_board(self) -> Optional[list[KanbanColumn]]:
+        return self._get(SessionKey.INITIAL_BOARD)
 
-    def has_initial_board(self):
-        return self.get_initial_board() is not None
+    def set_initial_board(self, board: list[KanbanColumn]):
+        self._set(SessionKey.INITIAL_BOARD, board)
+
+    def has_initial_board(self) -> bool:
+        return self._has(SessionKey.INITIAL_BOARD)
 
     def clear_initial_board(self):
-        if self.has_initial_board():
-            del self._state[SessionKey.INITIAL_BOARD]
+        self._clear(SessionKey.INITIAL_BOARD)
 
-    # Updated Test Cases Status Map
+    # Status Map
+
     def get_status_map(self):
-        return self._state.get(SessionKey.STATUS_MAP)
+        return self._get(SessionKey.STATUS_MAP)
 
     def set_status_map(self, status_map):
-        self._state[SessionKey.STATUS_MAP] = status_map
+        self._set(SessionKey.STATUS_MAP, status_map)
 
     def has_status_map(self):
-        return bool(self.get_status_map())
+        return self._has(SessionKey.STATUS_MAP)
 
     def clear_status_map(self):
-        if self.has_status_map():
-            del self._state[SessionKey.STATUS_MAP]
+        self._clear(SessionKey.STATUS_MAP)
 
-    def clear_cache(self):
-        """Clear all the cached data."""
-        keys = list(self._state.keys())
-        for key in keys:
-            self._state.pop(key)
+    # Search Params
 
-    # Search params
     def get_search_params(self):
-        return self._state.get(SessionKey.SEARCH_PARAMS)
+        return self._get(SessionKey.SEARCH_PARAMS)
 
-    def set_search_params(self, key: str, params: list[str | tuple[int, str]]):
+    def set_search_params(self, key: str, params):
         if not self.has_search_params():
-            self._state[SessionKey.SEARCH_PARAMS] = defaultdict(list)
+            self._set(SessionKey.SEARCH_PARAMS, defaultdict(list))
         self._state[SessionKey.SEARCH_PARAMS][key] = params
 
     def has_search_params(self):
-        return bool(self.get_search_params())
+        return self._has(SessionKey.SEARCH_PARAMS)
 
     def clear_search_params(self):
-        if self.has_search_params():
-            del self._state[SessionKey.SEARCH_PARAMS]
+        self._clear(SessionKey.SEARCH_PARAMS)
