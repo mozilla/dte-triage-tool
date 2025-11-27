@@ -1,10 +1,18 @@
 from src.config.types import KanbanColumn
-from src.core.state import SessionState
 
 
 class Util:
     def __init__(self):
-        self.session_state = SessionState()
+        self.status_translation = {
+            1: "Status Untriaged",
+            2: "Status Suitable",
+            3: "Status Unsuitable",
+            4: "Status Completed",
+            5: "Status Disabled",
+        }
+        self.inverted_status_translation = {
+            v.lower(): k for k, v in self.status_translation.items()
+        }
 
     @staticmethod
     def priority_color(priority_id):
@@ -48,3 +56,15 @@ class Util:
         for col in board:
             cases_by_status[col["id"]] = col["cards"]
         return cases_by_status
+
+    def update_initial_board(self, board: list[KanbanColumn], status_map: dict[str, list[str]]):
+        """Update the initial board with the test cases grouped by automation status."""
+        for case_id, status_change in status_map.items():
+            prev_idx = self.inverted_status_translation.get(status_change[0]) - 1
+            cur_idx = self.inverted_status_translation.get(status_change[1]) - 1
+            for idx, case in enumerate(board[prev_idx]["cards"]):
+                if case.get("id") == case_id:
+                    board[cur_idx]["cards"].append(case)
+                    board[prev_idx]["cards"].pop(idx)
+                    break
+        return board

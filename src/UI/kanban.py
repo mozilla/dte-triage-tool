@@ -99,7 +99,7 @@ class Kanban:
         """
         if test_cases:
             updated_cases = kanban(test_cases, str(test_cases))
-            if updated_cases:
+            if updated_cases and len(updated_cases[0]) > 0:
                 self.board_controller.update_status_map(updated_cases[0])
         else:
             st.info("No test cases found.\nChange search criteria and retry.")

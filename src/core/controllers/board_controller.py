@@ -12,10 +12,22 @@ class BoardController(BaseController):
     def __init__(self, state=None):
         super().__init__(state)
 
-    def update_status_map(self, updated_cases):
+    def update_status_map(self, updated_status_map):
         """Update the status map for test cases."""
-        self.state.clear_status_map()
-        self.state.set_status_map(updated_cases)
+        existing_status_map = self.state.get_status_map() or {}
+        # Merge, updated cases override
+        merged = existing_status_map | updated_status_map
+
+        # Filter out cases where the change cancels itself out
+        # only add to the final status map if:
+        #   case id isn't present in the existing status map OR updated status up
+        #   and if there present in both, make sure the initial state of the existing status map isn't the same as the updated status final state.
+        cleaned = {
+            cid: status for cid, status in merged.items() if
+            (not existing_status_map.get(cid)) or (not updated_status_map.get(cid)) or (
+                        updated_status_map.get(cid)[0] != existing_status_map.get(cid)[1])
+        }
+        self.state.set_status_map(cleaned)
 
     def format_status_map(self):
         """format the updated status map for the kanban board to csv format."""
@@ -35,7 +47,7 @@ class BoardController(BaseController):
         return df
 
     def normalize_and_save_data(
-        self, test_cases: dict[str, list[dict] | dict]
+            self, test_cases: dict[str, list[dict] | dict]
     ) -> list[KanbanColumn]:
         """
         Takes the test case data and formats it for the kanban board view and saves it to the session state.
@@ -55,9 +67,9 @@ class BoardController(BaseController):
             if rotation_filter and test_case.get("custom_rotation") != rotation_filter:
                 continue
             if (
-                automation_status_filter
-                and test_case.get("custom_automation_status")
-                not in automation_status_filter
+                    automation_status_filter
+                    and test_case.get("custom_automation_status")
+                    not in automation_status_filter
             ):
                 continue
             if test_case.get("custom_rotation"):
@@ -77,8 +89,8 @@ class BoardController(BaseController):
             )
         initial_board = list(cols.values())
         if not (
-            self.state.has_search_params()
-            and "rotations" in self.state.get_search_params()
+                self.state.has_search_params()
+                and "rotations" in self.state.get_search_params()
         ):
             self.state.set_search_params("rotations", list(rotations))
         self.state.set_initial_board(initial_board)

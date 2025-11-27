@@ -4,6 +4,7 @@ from typing import Optional, Any
 import streamlit as st
 from streamlit_local_storage import LocalStorage
 from src.config.types import FormValues, SessionKey, Priority, KanbanColumn
+from src.core.util import Util
 
 
 class SessionState:
@@ -14,6 +15,7 @@ class SessionState:
     def __init__(self, state=None):
         self._state = state if state is not None else st.session_state
         self.local_storage = LocalStorage()
+        self.util = Util()
 
     # Local Storage Helpers
 
@@ -28,6 +30,8 @@ class SessionState:
         if key not in self._state:
             stored_value = self.local_storage.getItem(key)
             if stored_value:
+                if key == SessionKey.STATUS_MAP and self.has_initial_board():
+                    self.util.update_initial_board(self.get_initial_board(), stored_value)
                 self._state[key] = stored_value
 
     def sync_all_from_storage(self):
@@ -37,6 +41,7 @@ class SessionState:
 
     def sync_all_to_storage(self):
         """Call this once on app exit to persist session state"""
+        self.local_storage.deleteAll()
         for key in SessionKey:
             self._persist(key, self._state.get(key))
 
@@ -46,10 +51,15 @@ class SessionState:
         return self._state.get(key, default)
 
     def _set(self, key: SessionKey, value: Any):
+        if key in self._state:
+            self._clear(key)
         self._state[key] = value
 
     def _clear(self, key: SessionKey):
         self._state.pop(key, None)
+
+    def _clear_local_storage(self, key: SessionKey):
+        self.local_storage.deleteAll(key)
 
     def _has(self, key: SessionKey) -> bool:
         return key in self._state and self._state[key] not in (None, {}, [], "")
@@ -59,6 +69,7 @@ class SessionState:
         for key in SessionKey:
             if key != SessionKey.AVAILABLE_PRIORITIES:
                 self._clear(key)
+                self._clear_local_storage(key)
 
     # Form Values
 
@@ -96,6 +107,7 @@ class SessionState:
         return self._get(SessionKey.INITIAL_BOARD)
 
     def set_initial_board(self, board: list[KanbanColumn]):
+        self.clear_initial_board()
         self._set(SessionKey.INITIAL_BOARD, board)
 
     def has_initial_board(self) -> bool:
