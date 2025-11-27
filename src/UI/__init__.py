@@ -15,9 +15,9 @@ else:
     _component_func = components.declare_component("kanban", path=build_dir)
 
 
-def kanban(columns, key=None):
+def kanban(columns, updated_columns=None, key=None):
     """
     Displays the kanban component.
     """
-    component_value = _component_func(columns=columns, key=key)
+    component_value = _component_func(columns=columns, updateColumns=updated_columns, key=key)
     return component_value

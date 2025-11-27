@@ -33,11 +33,13 @@ interface KanbanComponentProps extends ComponentProps {
 }
 
 function KanbanBoard({ args }: KanbanComponentProps): ReactElement {
-  const { columns: initialColumns } = args;
+  const { columns: initialColumns, updateColumns: changedUpdateColumn } = args;
 
-  const [currentColumns, setCurrentColumns] = useState<Column[]>(
-    initialColumns && Array.isArray(initialColumns) ? initialColumns : []
-  );
+    const [currentColumns, setCurrentColumns] = useState<Column[]>(() => {
+      if (changedUpdateColumn) return changedUpdateColumn;
+      if (Array.isArray(initialColumns)) return initialColumns;
+      return [];
+    });
 
   const [movedCards, setMovedCards] = useState<MovedCards[]>([{}]);
 

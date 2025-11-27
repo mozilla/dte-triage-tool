@@ -6,6 +6,7 @@ from src.UI import kanban
 from src.core.controllers.board_controller import BoardController
 from src.core.controllers.form_controller import FormController
 from src.config.types import FormValues
+from src.core.util import Util
 
 
 class Kanban:
@@ -13,6 +14,7 @@ class Kanban:
         st.set_page_config(layout="wide")
         self.form_controller = FormController()
         self.board_controller = BoardController()
+        self.util = Util()
 
     @staticmethod
     def header():
@@ -22,7 +24,8 @@ class Kanban:
         with st.sidebar:
             st.header("Triage Configuration")
             form_values: FormValues = self.form_controller.set_inputs()
-            if st.button("Fetch Test Cases", key="fetch-button"):
+            refresh_token = self.form_controller.state.get_refresh_token()
+            if st.button("Fetch Test Cases", key="fetch-button") or refresh_token:
                 test_cases, msg = self.form_controller.query_and_save(form_values)
                 if test_cases:
                     self.board_controller.normalize_and_save_data(test_cases)
@@ -99,7 +102,11 @@ class Kanban:
         """
         if test_cases:
             updated_cases = kanban(test_cases, str(test_cases))
-            if updated_cases:
+            if self.board_controller.state.get_refresh_token():
+                new_board = self.util.update_initial_board(test_cases, self.board_controller.state.get_status_map())
+                updated_cases = kanban(test_cases, new_board, str(test_cases))
+                self.board_controller.state.set_refresh_token(False)
+            if self.util.has_values(updated_cases):
                 self.board_controller.update_status_map(updated_cases[0])
         else:
             st.info("No test cases found.\nChange search criteria and retry.")

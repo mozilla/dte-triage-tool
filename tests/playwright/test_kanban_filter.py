@@ -27,7 +27,7 @@ def test_project_search_and_filter(
 ):
     expect(locators.project_suite_name_container).to_be_visible()
     project_container = locators.project_suite_name_container.get_by_text("Project:")
-    suite_container = locators.project_suite_name_container.get_by_text("Suite:")
+    suite_container = locators.project_suite_name_container.get_by_text("Suit`e:")
     # click expander
     expander = locators.project_suite_name_container.get_by_test_id("stExpander")
     expander.click()
