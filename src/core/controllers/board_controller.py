@@ -23,9 +23,11 @@ class BoardController(BaseController):
         #   case id isn't present in the existing status map OR updated status up
         #   and if there present in both, make sure the initial state of the existing status map isn't the same as the updated status final state.
         cleaned = {
-            cid: status for cid, status in merged.items() if
-            (not existing_status_map.get(cid)) or (not updated_status_map.get(cid)) or (
-                        updated_status_map.get(cid)[0] != existing_status_map.get(cid)[1])
+            cid: status
+            for cid, status in merged.items()
+            if (not existing_status_map.get(cid))
+            or (not updated_status_map.get(cid))
+            or (updated_status_map.get(cid)[0] != existing_status_map.get(cid)[1])
         }
         self.state.set_status_map(cleaned)
 
@@ -47,7 +49,7 @@ class BoardController(BaseController):
         return df
 
     def normalize_and_save_data(
-            self, test_cases: dict[str, list[dict] | dict]
+        self, test_cases: dict[str, list[dict] | dict]
     ) -> list[KanbanColumn]:
         """
         Takes the test case data and formats it for the kanban board view and saves it to the session state.
@@ -67,9 +69,9 @@ class BoardController(BaseController):
             if rotation_filter and test_case.get("custom_rotation") != rotation_filter:
                 continue
             if (
-                    automation_status_filter
-                    and test_case.get("custom_automation_status")
-                    not in automation_status_filter
+                automation_status_filter
+                and test_case.get("custom_automation_status")
+                not in automation_status_filter
             ):
                 continue
             if test_case.get("custom_rotation"):
@@ -89,8 +91,8 @@ class BoardController(BaseController):
             )
         initial_board = list(cols.values())
         if not (
-                self.state.has_search_params()
-                and "rotations" in self.state.get_search_params()
+            self.state.has_search_params()
+            and "rotations" in self.state.get_search_params()
         ):
             self.state.set_search_params("rotations", list(rotations))
         self.state.set_initial_board(initial_board)

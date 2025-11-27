@@ -31,7 +31,9 @@ class SessionState:
             stored_value = self.local_storage.getItem(key)
             if stored_value:
                 if key == SessionKey.STATUS_MAP and self.has_initial_board():
-                    self.util.update_initial_board(self.get_initial_board(), stored_value)
+                    self.util.update_initial_board(
+                        self.get_initial_board(), stored_value
+                    )
                 self._state[key] = stored_value
 
     def sync_all_from_storage(self):

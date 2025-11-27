@@ -57,7 +57,9 @@ class Util:
             cases_by_status[col["id"]] = col["cards"]
         return cases_by_status
 
-    def update_initial_board(self, board: list[KanbanColumn], status_map: dict[str, list[str]]):
+    def update_initial_board(
+        self, board: list[KanbanColumn], status_map: dict[str, list[str]]
+    ):
         """Update the initial board with the test cases grouped by automation status."""
         for case_id, status_change in status_map.items():
             prev_idx = self.inverted_status_translation.get(status_change[0]) - 1
