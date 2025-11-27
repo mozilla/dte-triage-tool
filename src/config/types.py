@@ -23,6 +23,10 @@ class SessionKey(str, Enum):
     STATUS_MAP = "test_case_status_map"
     SEARCH_PARAMS = "search_params"
 
+class CacheKey(str, Enum):
+    """Cache keys."""
+    REFRESH_TOKEN = "refresh_token"
+
 
 class Priority(TypedDict):
     """Priority object."""

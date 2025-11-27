@@ -77,6 +77,7 @@ class FormController(BaseController):
         """
         Save the form data to the session state.
         """
+        form_values = self.state.get_form_values() if self.state.get_refresh_token() else form_values
         self.clear_on_fetch()
         required = ("project_id", "suite_id")
         if not all(k in form_values and form_values.get(k) for k in required):
@@ -106,6 +107,7 @@ class FormController(BaseController):
                     extracted_data.get("project_id"), extracted_data.get("suite_id")
                 )
             test_cases = self.triage.fetch_test_cases(extracted_data)
+            # not optimal, should change in the future!!!
             invalid_cases = [
                 case["id"]
                 for case in test_cases.get("cases")

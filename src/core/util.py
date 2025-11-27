@@ -1,3 +1,5 @@
+import copy
+
 from src.config.types import KanbanColumn
 
 
@@ -27,6 +29,10 @@ class Util:
             1: "#43a047",  # Low - Green
         }
         return mapping.get(int(priority_id), "#9e9e9e")  # Default - Grey
+
+    @staticmethod
+    def has_values(lst: list) -> bool:
+        return lst and any(isinstance(item, dict) and item for item in lst)
 
     @staticmethod
     def extract_and_concat_ids(data: list[tuple[int, str]]) -> str:
@@ -61,12 +67,13 @@ class Util:
         self, board: list[KanbanColumn], status_map: dict[str, list[str]]
     ):
         """Update the initial board with the test cases grouped by automation status."""
+        new_board = copy.deepcopy(board)
         for case_id, status_change in status_map.items():
             prev_idx = self.inverted_status_translation.get(status_change[0]) - 1
             cur_idx = self.inverted_status_translation.get(status_change[1]) - 1
-            for idx, case in enumerate(board[prev_idx]["cards"]):
+            for idx, case in enumerate(new_board[prev_idx]["cards"]):
                 if case.get("id") == case_id:
-                    board[cur_idx]["cards"].append(case)
-                    board[prev_idx]["cards"].pop(idx)
+                    new_board[cur_idx]["cards"].append(case)
+                    new_board[prev_idx]["cards"].pop(idx)
                     break
-        return board
+        return new_board

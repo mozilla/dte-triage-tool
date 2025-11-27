@@ -3,7 +3,7 @@ from typing import Optional, Any
 
 import streamlit as st
 from streamlit_local_storage import LocalStorage
-from src.config.types import FormValues, SessionKey, Priority, KanbanColumn
+from src.config.types import FormValues, SessionKey, Priority, KanbanColumn, CacheKey
 from src.core.util import Util
 
 
@@ -30,10 +30,8 @@ class SessionState:
         if key not in self._state:
             stored_value = self.local_storage.getItem(key)
             if stored_value:
-                if key == SessionKey.STATUS_MAP and self.has_initial_board():
-                    self.util.update_initial_board(
-                        self.get_initial_board(), stored_value
-                    )
+                if key == SessionKey.FORM_VALUES:
+                    self._state[CacheKey.REFRESH_TOKEN] = True
                 self._state[key] = stored_value
 
     def sync_all_from_storage(self):
@@ -49,26 +47,28 @@ class SessionState:
 
     # Generic helpers
 
-    def _get(self, key: SessionKey, default=None) -> Any:
+    def _get(self, key: SessionKey | CacheKey, default=None) -> Any:
         return self._state.get(key, default)
 
-    def _set(self, key: SessionKey, value: Any):
+    def _set(self, key: SessionKey | CacheKey, value: Any):
         if key in self._state:
             self._clear(key)
         self._state[key] = value
 
-    def _clear(self, key: SessionKey):
+    def _clear(self, key: SessionKey | CacheKey):
         self._state.pop(key, None)
 
     def _clear_local_storage(self, key: SessionKey):
         self.local_storage.deleteAll(key)
 
-    def _has(self, key: SessionKey) -> bool:
+    def _has(self, key: SessionKey | CacheKey) -> bool:
         return key in self._state and self._state[key] not in (None, {}, [], "")
 
     def clear_state_values(self):
         """Clear all session state values except priorities"""
         for key in SessionKey:
+            if key == SessionKey.STATUS_MAP and self.get_refresh_token():
+                continue
             if key != SessionKey.AVAILABLE_PRIORITIES:
                 self._clear(key)
                 self._clear_local_storage(key)
@@ -147,3 +147,10 @@ class SessionState:
 
     def clear_search_params(self):
         self._clear(SessionKey.SEARCH_PARAMS)
+
+    # Refresh Token
+    def get_refresh_token(self):
+        return self._get(CacheKey.REFRESH_TOKEN, False)
+
+    def set_refresh_token(self, val: bool = False):
+        return self._set(CacheKey.REFRESH_TOKEN, val)

@@ -14,22 +14,22 @@ class BoardController(BaseController):
 
     def update_status_map(self, updated_status_map):
         """Update the status map for test cases."""
-        existing_status_map = self.state.get_status_map() or {}
-        # Merge, updated cases override
-        merged = existing_status_map | updated_status_map
-
-        # Filter out cases where the change cancels itself out
-        # only add to the final status map if:
-        #   case id isn't present in the existing status map OR updated status up
-        #   and if there present in both, make sure the initial state of the existing status map isn't the same as the updated status final state.
-        cleaned = {
-            cid: status
-            for cid, status in merged.items()
-            if (not existing_status_map.get(cid))
-            or (not updated_status_map.get(cid))
-            or (updated_status_map.get(cid)[0] != existing_status_map.get(cid)[1])
-        }
-        self.state.set_status_map(cleaned)
+        # existing_status_map = self.state.get_status_map() or {}
+        # # Merge, updated cases override
+        # merged = existing_status_map | updated_status_map
+        #
+        # # Filter out cases where the change cancels itself out
+        # # only add to the final status map if:
+        # #   case id isn't present in the existing status map OR updated status up
+        # #   and if there present in both, make sure the initial state of the existing status map isn't the same as the updated status final state.
+        # cleaned = {
+        #     cid: status
+        #     for cid, status in merged.items()
+        #     if (not existing_status_map.get(cid))
+        #     or (not updated_status_map.get(cid))
+        #     or (updated_status_map.get(cid)[0] != existing_status_map.get(cid)[1])
+        # }
+        self.state.set_status_map(updated_status_map)
 
     def format_status_map(self):
         """format the updated status map for the kanban board to csv format."""
