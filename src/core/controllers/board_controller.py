@@ -35,7 +35,11 @@ class BoardController(BaseController):
 
     def format_status_map(self, test_cases):
         """format the updated status map for the kanban board to csv format."""
-        current_status_map = {k: v for k, v in self.state.get_status_map().items() if test_cases.get(k) and test_cases.get(k) != v[1] }
+        current_status_map = {
+            k: v
+            for k, v in self.state.get_status_map().items()
+            if test_cases.get(k) and test_cases.get(k) != v[1]
+        }
         form_value: FormValues = self.state.get_form_values()
         status_map = []
         for k, v in current_status_map.items():
@@ -68,8 +72,9 @@ class BoardController(BaseController):
         self.state.set_initial_board(initial_board)
         return initial_board
 
-    def normalize_test_cases(self, test_cases: dict[str, list[dict] | dict]) -> tuple[dict[str, KanbanColumn], set[
-        str]] | None:
+    def normalize_test_cases(
+        self, test_cases: dict[str, list[dict] | dict]
+    ) -> tuple[dict[str, KanbanColumn], set[str]] | None:
         """Normalize the test cases to a format that can be used for the kanban board."""
         cols: dict[str, KanbanColumn] = {
             status: {"id": status.lower(), "title": status, "cards": []}
@@ -85,9 +90,9 @@ class BoardController(BaseController):
             if rotation_filter and test_case.get("custom_rotation") != rotation_filter:
                 continue
             if (
-                    automation_status_filter
-                    and test_case.get("custom_automation_status")
-                    not in automation_status_filter
+                automation_status_filter
+                and test_case.get("custom_automation_status")
+                not in automation_status_filter
             ):
                 continue
             if test_case.get("custom_rotation"):

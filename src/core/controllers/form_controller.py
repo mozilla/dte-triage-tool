@@ -75,12 +75,16 @@ class FormController(BaseController):
 
     def query_and_save(self, form_values: dict) -> tuple[dict, str]:
         """
-            Save the form data to the session state.
+        Save the form data to the session state.
         """
         required = ("project_id", "suite_id")
         additional_required = ("custom_rotation", "section_id")
-        has_required_search_params = all(k in form_values and form_values.get(k) for k in required)
-        has_additional_search_params = any(k in form_values and form_values.get(k) for k in additional_required)
+        has_required_search_params = all(
+            k in form_values and form_values.get(k) for k in required
+        )
+        has_additional_search_params = any(
+            k in form_values and form_values.get(k) for k in additional_required
+        )
         if not has_required_search_params:
             return {}, "Please fill in all required fields."
         extracted_data = {
@@ -161,7 +165,7 @@ class FormController(BaseController):
             grouped_tc[status_code].append(tc_id)
         return self.triage.update_case_automation_statuses(grouped_tc)
 
-    def clear_on_fetch(self, excluded_states: set[SessionKey]=None):
+    def clear_on_fetch(self, excluded_states: set[SessionKey] = None):
         """Clear the form values and initial board data."""
         if excluded_states is None:
             excluded_states = set(SessionKey.AVAILABLE_PRIORITIES)
@@ -170,8 +174,8 @@ class FormController(BaseController):
         self.state.clear_state_values(excluded_states)
 
     def query_and_normalize_for_commit(self):
-        """ Query initial test cases from form values and normalize them for faster look ups.
-            Used when commiting changes to testrail to compare status map to initial state of the query.
+        """Query initial test cases from form values and normalize them for faster look ups.
+        Used when commiting changes to testrail to compare status map to initial state of the query.
         """
         form_values = self.state.get_form_values()
         query_output = {}
@@ -200,7 +204,9 @@ class FormController(BaseController):
             for case in test_cases.get("cases"):
                 if "custom_automation_status" not in case:
                     continue
-                query_output[str(case["id"])] = self.status_translation.get(case["custom_automation_status"]).lower()
+                query_output[str(case["id"])] = self.status_translation.get(
+                    case["custom_automation_status"]
+                ).lower()
             return query_output, "Success"
         except Exception as e:
             return {}, str(e)

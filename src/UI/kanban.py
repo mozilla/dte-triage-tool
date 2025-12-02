@@ -99,7 +99,7 @@ class Kanban:
 
     def display_kanban_board(self, test_cases):
         """
-            Displays the Kanban board with the fetched test cases.
+        Displays the Kanban board with the fetched test cases.
         """
         if test_cases:
             updated_cases = kanban(test_cases, str(test_cases))
