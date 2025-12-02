@@ -72,7 +72,7 @@ class Kanban:
     @st.dialog("Current Changes:", on_dismiss="rerun", width="large")
     def show_changes(self):
         """Dialog to show the changes in the status of the test cases."""
-        test_cases = self.form_controller.query_and_normalize_for_commit()
+        test_cases, msg = self.form_controller.query_and_normalize_for_commit()
         if test_cases:
             formated_status_map = self.board_controller.format_status_map(test_cases)
             st.table(formated_status_map)
@@ -99,7 +99,7 @@ class Kanban:
 
     def display_kanban_board(self, test_cases):
         """
-        Displays the Kanban board with the fetched test cases.
+            Displays the Kanban board with the fetched test cases.
         """
         if test_cases:
             updated_cases = kanban(test_cases, str(test_cases))

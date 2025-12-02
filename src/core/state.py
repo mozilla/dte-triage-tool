@@ -66,10 +66,10 @@ class SessionState:
     def _has(self, key: SessionKey) -> bool:
         return key in self._state and self._state[key] not in (None, {}, [], "")
 
-    def clear_state_values(self):
+    def clear_state_values(self, excluded_states):
         """Clear all session state values except priorities"""
         for key in SessionKey:
-            if key != SessionKey.AVAILABLE_PRIORITIES:
+            if key not in excluded_states:
                 self._clear(key)
                 self._clear_local_storage(key)
 
@@ -79,7 +79,10 @@ class SessionState:
         return self._get(SessionKey.FORM_VALUES, {})
 
     def set_form_values(self, values: FormValues):
-        self._set(SessionKey.FORM_VALUES, values)
+        if self._has(SessionKey.FORM_VALUES):
+            self.get_form_values().update(values)
+        else:
+            self._set(SessionKey.FORM_VALUES, values)
 
     def has_form_values(self) -> bool:
         fv = self.get_form_values()
