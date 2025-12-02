@@ -159,3 +159,28 @@ class FormController(BaseController):
     def clear_on_fetch(self):
         """Clear the form values and initial board data."""
         self.state.clear_state_values()
+
+    def query_and_normalize_for_commit(self):
+        """ Query initial test cases from form values and normalize them for faster look ups.
+            Used when commiting changes to testrail to compare status map to initial state of the query.
+        """
+        form_values = self.state.get_form_values()
+        query_output = {}
+        required = ("project_id", "suite_id")
+        if not all(k in form_values and form_values.get(k) for k in required):
+            return {}, "Please fill in all required fields."
+        extracted_data = {
+            "project_id": int(form_values.get("project_id")),
+            "suite_id": int(form_values.get("suite_id")),
+            "priority_id": Util.extract_and_concat_ids(form_values.get("priority_id")),
+            "custom_automation_status": Util.extract_and_concat_ids(
+                form_values.get("automation_status")
+            ),
+            "limit": int(form_values.get("limit")),
+        }
+        test_cases = self.triage.fetch_test_cases(extracted_data)
+        for case in test_cases.get("cases"):
+            if "custom_automation_status" not in case:
+                continue
+            query_output[str(case["id"])] = self.status_translation.get(case["custom_automation_status"]).lower()
+        return query_output

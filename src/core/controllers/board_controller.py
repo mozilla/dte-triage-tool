@@ -1,3 +1,5 @@
+from typing import Tuple
+
 from src.config.types import KanbanColumn, FormValues
 from src.core.controllers.base_controller import BaseController
 from src.core.util import Util
@@ -31,9 +33,9 @@ class BoardController(BaseController):
         }
         self.state.set_status_map(cleaned)
 
-    def format_status_map(self):
+    def format_status_map(self, test_cases):
         """format the updated status map for the kanban board to csv format."""
-        current_status_map = self.state.get_status_map()
+        current_status_map = {k: v for k, v in self.state.get_status_map().items() if test_cases.get(k) and test_cases.get(k) != v[1] }
         form_value: FormValues = self.state.get_form_values()
         status_map = []
         for k, v in current_status_map.items():
@@ -45,6 +47,7 @@ class BoardController(BaseController):
                 "Current Status": v[1],
             }
             status_map.append(item)
+        self.state.set_status_map(current_status_map)
         df = pd.DataFrame(status_map, columns=self.csv_headers)
         return df
 
@@ -55,11 +58,24 @@ class BoardController(BaseController):
         Takes the test case data and formats it for the kanban board view and saves it to the session state.
         """
         test_cases = test_cases.get("cases", [])
+        cols, rotations = self.normalize_test_cases(test_cases)
+        initial_board = list(cols.values())
+        if not (
+            self.state.has_search_params()
+            and "rotations" in self.state.get_search_params()
+        ):
+            self.state.set_search_params("rotations", list(rotations))
+        self.state.set_initial_board(initial_board)
+        return initial_board
+
+    def normalize_test_cases(self, test_cases: dict[str, list[dict] | dict]) -> tuple[dict[str, KanbanColumn], set[
+        str]] | None:
+        """Normalize the test cases to a format that can be used for the kanban board."""
         cols: dict[str, KanbanColumn] = {
             status: {"id": status.lower(), "title": status, "cards": []}
             for status in self.status_translation.values()
         }
-        rotations = set()
+        rotations: set[str] = set()
         rotation_filter = self.state.get_form_values().get("custom_rotation")
         automation_status_filter = [
             status[0]
@@ -69,9 +85,9 @@ class BoardController(BaseController):
             if rotation_filter and test_case.get("custom_rotation") != rotation_filter:
                 continue
             if (
-                automation_status_filter
-                and test_case.get("custom_automation_status")
-                not in automation_status_filter
+                    automation_status_filter
+                    and test_case.get("custom_automation_status")
+                    not in automation_status_filter
             ):
                 continue
             if test_case.get("custom_rotation"):
@@ -89,11 +105,4 @@ class BoardController(BaseController):
                     "color": Util.priority_color(test_case["priority_id"]),
                 }
             )
-        initial_board = list(cols.values())
-        if not (
-            self.state.has_search_params()
-            and "rotations" in self.state.get_search_params()
-        ):
-            self.state.set_search_params("rotations", list(rotations))
-        self.state.set_initial_board(initial_board)
-        return initial_board
+        return cols, rotations

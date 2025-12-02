@@ -72,26 +72,30 @@ class Kanban:
     @st.dialog("Current Changes:", on_dismiss="rerun", width="large")
     def show_changes(self):
         """Dialog to show the changes in the status of the test cases."""
-        formated_status_map = self.board_controller.format_status_map()
-        st.table(formated_status_map)
-        left, right = st.columns([0.3, 0.7], gap="small")
-        submitted = left.button(
-            "Submit",
-            on_click=self.form_controller.commit_changes_to_testrail,
-            key="submit-button",
-        )
-        timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H_%M_%SZ")
-        right.download_button(
-            use_container_width=True,
-            label="Download Session Data(CSV)",
-            data=self.convert_for_download(formated_status_map),
-            file_name=f"session_{timestamp}.csv",
-            mime="text/csv",
-            icon=":material/download:",
-        )
-        if submitted:
-            self.form_controller.clear_on_fetch()
-            st.rerun(scope="app")
+        test_cases = self.form_controller.query_and_normalize_for_commit()
+        if test_cases:
+            formated_status_map = self.board_controller.format_status_map(test_cases)
+            st.table(formated_status_map)
+            left, right = st.columns([0.3, 0.7], gap="small")
+            submitted = left.button(
+                "Submit",
+                on_click=self.form_controller.commit_changes_to_testrail,
+                key="submit-button",
+            )
+            timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H_%M_%SZ")
+            right.download_button(
+                use_container_width=True,
+                label="Download Session Data(CSV)",
+                data=self.convert_for_download(formated_status_map),
+                file_name=f"session_{timestamp}.csv",
+                mime="text/csv",
+                icon=":material/download:",
+            )
+            if submitted:
+                self.form_controller.clear_on_fetch()
+                st.rerun(scope="app")
+        else:
+            st.warning(msg)
 
     def display_kanban_board(self, test_cases):
         """
