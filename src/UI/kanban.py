@@ -22,13 +22,15 @@ class Kanban:
         with st.sidebar:
             st.header("Triage Configuration")
             form_values: FormValues = self.form_controller.set_inputs()
+            msg = None
             if st.button("Fetch Test Cases", key="fetch-button"):
                 test_cases, msg = self.form_controller.query_and_save(form_values)
                 if test_cases:
                     self.board_controller.normalize_and_save_data(test_cases)
-                else:
-                    st.warning(msg)
-
+            st.divider()
+            self.commit()
+            if msg:
+                st.warning(msg)
     def display_project_suite_header(self):
         """
         Display the project and suite name in the header.
@@ -54,7 +56,7 @@ class Kanban:
 
     def body(self):
         # Main content area
-        if self.board_controller.state.has_initial_board():
+        if self.board_controller.state.has_initial_board() and self.board_controller.state.has_form_values():
             self.display_project_suite_header()
             self.display_kanban_board(self.board_controller.state.get_initial_board())
         else:
@@ -64,9 +66,8 @@ class Kanban:
 
     def commit(self):
         """Commit the changes in the test cases to test rail."""
-        st.sidebar.warning("Changes Detected")
         st.sidebar.button(
-            "Commit Changes", on_click=self.show_changes, key="commit-button"
+            "Commit Changes", on_click=self.show_changes, key="commit-button", icon="⚠️"
         )
 
     @st.dialog("Current Changes:", on_dismiss="rerun", width="large")
@@ -112,8 +113,6 @@ class Kanban:
         self.header()
         self.sidebar()
         self.body()
-        if self.board_controller.state.has_status_map():
-            self.commit()
 
     @staticmethod
     def convert_for_download(df):

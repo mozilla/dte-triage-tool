@@ -1,3 +1,4 @@
+import time
 from collections import defaultdict
 from typing import Optional, Any
 
@@ -21,8 +22,6 @@ class SessionState:
 
     def _persist(self, item_key, value: any):
         """Helper to save to local storage"""
-        if self.local_storage.getItem(item_key):
-            self.local_storage.deleteAll(item_key)
         self.local_storage.setItem(item_key, value, key=item_key.value)
 
     def _load_from_storage(self, key: str):
@@ -61,17 +60,18 @@ class SessionState:
         self._state.pop(key, None)
 
     def _clear_local_storage(self, key: SessionKey):
-        self.local_storage.deleteAll(key)
+        self.local_storage.eraseItem(key, key=key.value)
 
     def _has(self, key: SessionKey) -> bool:
         return key in self._state and self._state[key] not in (None, {}, [], "")
 
     def clear_state_values(self, excluded_states):
         """Clear all session state values except priorities"""
+        if self.local_storage.getAll():
+            self.local_storage.deleteAll(key="clear_state_values")
         for key in SessionKey:
             if key not in excluded_states:
                 self._clear(key)
-                self._clear_local_storage(key)
 
     # Form Values
 
