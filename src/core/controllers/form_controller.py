@@ -17,9 +17,9 @@ AUTOMATION_STATUSES = [
 
 
 class FormController(BaseController):
-    def __init__(self, state=None):
+    def __init__(self, state=None, triage=None):
         super().__init__(state)
-        self.triage = Triage().get_instance()
+        self.triage = triage if triage else Triage().get_instance()
         self.inverted_status_translation = {
             v.lower(): k for k, v in self.status_translation.items()
         }

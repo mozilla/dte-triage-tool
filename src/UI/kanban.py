@@ -31,6 +31,7 @@ class Kanban:
             self.commit()
             if msg:
                 st.warning(msg)
+
     def display_project_suite_header(self):
         """
         Display the project and suite name in the header.
@@ -56,7 +57,10 @@ class Kanban:
 
     def body(self):
         # Main content area
-        if self.board_controller.state.has_initial_board() and self.board_controller.state.has_form_values():
+        if (
+            self.board_controller.state.has_initial_board()
+            and self.board_controller.state.has_form_values()
+        ):
             self.display_project_suite_header()
             self.display_kanban_board(self.board_controller.state.get_initial_board())
         else:

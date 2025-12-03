@@ -1,4 +1,3 @@
-import time
 from collections import defaultdict
 from typing import Optional, Any
 
@@ -13,9 +12,9 @@ class SessionState:
     Thin wrapper for typed session state access.
     """
 
-    def __init__(self, state=None):
+    def __init__(self, state=None, storage=None):
         self._state = state if state is not None else st.session_state
-        self.local_storage = LocalStorage()
+        self.local_storage = storage if storage is not None else LocalStorage()
         self.util = Util()
 
     # Local Storage Helpers

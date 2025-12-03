@@ -1,4 +1,3 @@
-from typing import Tuple
 
 from src.config.types import KanbanColumn, FormValues
 from src.core.controllers.base_controller import BaseController
