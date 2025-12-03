@@ -1,3 +1,5 @@
+
+
 class TestSessionState:
     def test_form_values_set_get_has_clear(self, session_state):
         assert not session_state.get_form_values()
@@ -84,5 +86,5 @@ class TestSessionState:
         session_state.set_status_map({1: ("Status Untriaged", "Status Suitable")})
 
         assert session_state._state
-        session_state.clear_cache()
+        session_state.clear_state_values({})
         assert session_state._state == {}

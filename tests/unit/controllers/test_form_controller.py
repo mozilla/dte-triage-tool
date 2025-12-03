@@ -4,8 +4,8 @@ from unittest.mock import MagicMock, patch
 
 
 @pytest.fixture
-def controller(session_state):
-    return FormController(state=session_state)
+def controller(session_state, triage):
+    return FormController(state=session_state, triage=triage)
 
 
 class TestFormController:

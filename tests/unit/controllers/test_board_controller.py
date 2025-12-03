@@ -24,7 +24,8 @@ class TestBoardController:
                 20: ("Status Suitable", "Status Completed"),
             }
         )
-        df = controller.format_status_map()
+        mock_test_cases = {"2": "status untriaged", "10": "status suitable"}
+        df = controller.format_status_map(mock_test_cases)
         # check that the headers are set correctly
         assert list(df.columns) == controller.csv_headers
 
@@ -33,17 +34,22 @@ class TestBoardController:
     ):
         # Set up test data
         status_map = {
-            1: ("Status Untriaged", "Status Suitable"),
-            2: ("Status Suitable", "Status Completed"),
-            3: ("Status Completed", "Status Disabled"),
+            "1": ("Status Untriaged", "Status Suitable"),
+            "2": ("Status Untriaged", "Status Completed"),
+            "3": ("Status Completed", "Status Disabled"),
         }
         form_values = {"project_id": "P123", "suite_id": "S456"}
 
         session_state.set_status_map(status_map)
         session_state.set_form_values(form_values)
+        mock_test_cases = {
+            "1": "Status Untriaged",
+            "2": "Status Untriaged",
+            "3": "Status Completed",
+        }
 
         # Get dataframe
-        df: DataFrame = controller.format_status_map()
+        df: DataFrame = controller.format_status_map(mock_test_cases)
 
         assert len(df) == 3
         # check that the headers are set correctly and values are correct
