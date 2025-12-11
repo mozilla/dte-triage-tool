@@ -18,7 +18,7 @@ DEFAULT_BLOCK_SEARCH_PAYLOAD = {
     "j_top": "OR",
     "f1": "blocked",
     "v1": 1976270,
-    "include_fields": ["description", "_default"]
+    "include_fields": ["description", "_default"],
 }
 FUNCTIONAL_ROOT_METABUG = 1976270
 
@@ -109,7 +109,8 @@ class Bugzilla:
         return [
             bug
             for bug in case_dependencies
-            if case_re.search(bug.get("description", "")) or f"(C{case_id})" in (bug.get("summary", ""))
+            if case_re.search(bug.get("description", ""))
+            or f"(C{case_id})" in (bug.get("summary", ""))
         ]
 
     def find_bugs_by_test_case_ids(
