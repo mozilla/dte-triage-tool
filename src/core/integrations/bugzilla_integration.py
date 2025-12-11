@@ -157,16 +157,18 @@ class Bugzilla:
             )
             # Indexing on results for get_bug and search_bug is necessary
             suite_bug = self.get_bug(suite_bug_id).get("bugs")[0]
+            suite_bug_priority = suite_bug.get("priority", "P1")
         elif len(matching_suites) == 1:
             logging.warning(f"1 matching_suites: {matching_suites}")
             suite_bug = matching_suites[0]
             suite_bug_id = suite_bug.get("id")
+            suite_bug_priority = suite_bug.get("priority", "P1")
         else:
             logging.warning("many suites")
             # TODO: is this case an error?
             suite_bug = matching_suites[0]
             suite_bug_id = suite_bug.get("id")
-
+            suite_bug_priority = suite_bug.get("priority", "P1")
         case_params = []
         for case_ in content_payload.get("cases"):
             logging.warning(f"case {case_}")
@@ -174,7 +176,7 @@ class Bugzilla:
             case_matches = self.find_bugs_by_test_case_id(
                 str(case_.get("case_id")), suite_bug_id
             )
-            case_priority = suite_bug.get("priority", "P1")
+            case_priority = "P1" if suite_bug_priority == "--" else suite_bug_priority
             logging.warning(f"matches {case_matches}")
             if not case_matches:
                 logging.warning("not case matches")

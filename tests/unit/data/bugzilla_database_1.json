@@ -17,7 +17,8 @@
     },
     {
         "id": 3,
-        "summary": "[Test Feature] Create test for Test Foo",
+        "priority": "P1",
+        "summary": "[Test Feature] Create test for (C111): Test Foo",
         "blocks": [2],
         "component": "STArFox",
         "description": "Create test for Test Feature manual test case: Test Foo\n\nTestRail test ID: [111](https://testrail.example.com/index.php?/cases/view/111)\nSTArFox test suite: tabs\n\nTest Steps:\n\nTestSteps\n\nTestEnd",

@@ -25,8 +25,9 @@
   {
     "id": 3,
     "component": "STArFox",
+    "priority": "P1",
     "product": "Mozilla QA",
-    "summary": "[Test Feature] Create test for Test Foo",
+    "summary": "[Test Feature] Create test for (C111): Test Foo",
     "version": "unspecified",
     "type": "task",
     "description": "Create test for Test Feature manual test case: Test Foo\n\nTestRail test ID: [111](https://testrail.example.com/index.php?/cases/view/111)\nSTArFox test suite: tabs\n\nTest Steps:\n\nTestSteps\n\nTestEnd",
@@ -36,9 +37,10 @@
   },
   {
     "id": 4,
+    "priority": "P1",
     "component": "STArFox",
     "product": "Mozilla QA",
-    "summary": "[Test Feature] Create test for Test Bar",
+    "summary": "[Test Feature] Create test for (C222): Test Bar",
     "version": "unspecified",
     "type": "task",
     "description": "Create test for Test Feature manual test case: Test Bar\n\nTestRail test ID: [222](https://testrail.example.com/index.php?/cases/view/222)\nSTArFox test suite: geolocation\n\nTest Steps:\n\nTestStepsB\n\nTestEndB",
