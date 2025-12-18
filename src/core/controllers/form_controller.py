@@ -4,7 +4,7 @@ import streamlit as st
 
 from src.core.controllers.base_controller import BaseController
 from src.core.triage import Triage
-from src.config.types import FormValues
+from src.config.types import FormValues, SessionKey
 from src.core.util import Util
 
 AUTOMATION_STATUSES = [
@@ -17,9 +17,9 @@ AUTOMATION_STATUSES = [
 
 
 class FormController(BaseController):
-    def __init__(self, state=None):
+    def __init__(self, state=None, triage=None):
         super().__init__(state)
-        self.triage = Triage().get_instance()
+        self.triage = triage if triage else Triage().get_instance()
         self.inverted_status_translation = {
             v.lower(): k for k, v in self.status_translation.items()
         }
@@ -77,9 +77,15 @@ class FormController(BaseController):
         """
         Save the form data to the session state.
         """
-        self.clear_on_fetch()
         required = ("project_id", "suite_id")
-        if not all(k in form_values and form_values.get(k) for k in required):
+        additional_required = ("custom_rotation", "section_id")
+        has_required_search_params = all(
+            k in form_values and form_values.get(k) for k in required
+        )
+        has_additional_search_params = any(
+            k in form_values and form_values.get(k) for k in additional_required
+        )
+        if not has_required_search_params:
             return {}, "Please fill in all required fields."
         extracted_data = {
             "project_id": int(form_values.get("project_id")),
@@ -90,14 +96,17 @@ class FormController(BaseController):
             ),
             "limit": int(form_values.get("limit")),
         }
-        additional_required = ("custom_rotation", "section_id")
-        if any(k in form_values and form_values.get(k) for k in additional_required):
+        if has_additional_search_params:
             extracted_data |= {
                 "custom_rotation": form_values.get("custom_rotation"),
                 "section_id": form_values.get("section_id")[0]
                 if form_values.get("section_id")
                 else None,
             }
+        if has_additional_search_params:
+            self.clear_on_fetch({SessionKey.SEARCH_PARAMS})
+        else:
+            self.clear_on_fetch()
         self.state.set_form_values(form_values)
         try:
             if not self.state.has_search_params():
@@ -156,9 +165,48 @@ class FormController(BaseController):
             grouped_tc[status_code].append(tc_id)
         return self.triage.update_case_automation_statuses(grouped_tc)
 
-    def clear_on_fetch(self):
+    def clear_on_fetch(self, excluded_states: set[SessionKey] = None):
         """Clear the form values and initial board data."""
-        self.state.clear_search_params()
-        self.state.clear_initial_board()
-        self.state.clear_status_map()
-        self.state.clear_form_values()
+        if excluded_states is None:
+            excluded_states = set(SessionKey.AVAILABLE_PRIORITIES)
+        else:
+            excluded_states.add(SessionKey.AVAILABLE_PRIORITIES)
+        self.state.clear_state_values(excluded_states)
+
+    def query_and_normalize_for_commit(self):
+        """Query initial test cases from form values and normalize them for faster look ups.
+        Used when commiting changes to testrail to compare status map to initial state of the query.
+        """
+        form_values = self.state.get_form_values()
+        query_output = {}
+        required = ("project_id", "suite_id")
+        if not all(k in form_values and form_values.get(k) for k in required):
+            return {}, "Please fill in all required fields."
+        extracted_data = {
+            "project_id": int(form_values.get("project_id")),
+            "suite_id": int(form_values.get("suite_id")),
+            "priority_id": Util.extract_and_concat_ids(form_values.get("priority_id")),
+            "custom_automation_status": Util.extract_and_concat_ids(
+                form_values.get("automation_status")
+            ),
+            "limit": int(form_values.get("limit")),
+        }
+        additional_required = ("custom_rotation", "section_id")
+        if any(k in form_values and form_values.get(k) for k in additional_required):
+            extracted_data |= {
+                "custom_rotation": form_values.get("custom_rotation"),
+                "section_id": form_values.get("section_id")[0]
+                if form_values.get("section_id")
+                else None,
+            }
+        try:
+            test_cases = self.triage.fetch_test_cases(extracted_data)
+            for case in test_cases.get("cases"):
+                if "custom_automation_status" not in case:
+                    continue
+                query_output[str(case["id"])] = self.status_translation.get(
+                    case["custom_automation_status"]
+                ).lower()
+            return query_output, "Success"
+        except Exception as e:
+            return {}, str(e)

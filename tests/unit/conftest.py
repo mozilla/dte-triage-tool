@@ -59,7 +59,10 @@ def mock_bugzilla(httpserver: HTTPServer):
 
 @pytest.fixture
 def session_state():
-    return SessionState({"state": True})
+    mock_storage = MagicMock()
+    mock_storage.getItem.return_value = None
+    mock_storage.getAll.return_value = {}
+    return SessionState({}, storage=mock_storage)
 
 
 @pytest.fixture
